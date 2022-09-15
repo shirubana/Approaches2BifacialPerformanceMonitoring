@@ -1,4 +1,3 @@
-![logo](docs/images_wiki/bifacial_radiance.png)
 
 # Approaches to Bifacial Perofrmance Monitoring
 Github with the data and methods used to explore the various approaches to bifacial performance monitoring, for a forthcoming publication.
