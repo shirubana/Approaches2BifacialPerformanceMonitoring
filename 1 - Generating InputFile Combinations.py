@@ -46,7 +46,7 @@ print("Spanning from", data.index[0], " to ", data.index[-1])
 data.keys()
 
 
-# In[6]:
+# In[113]:
 
 
 def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=None, DNI=None, GHI=None, 
@@ -120,7 +120,8 @@ def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=N
         savedata.to_csv(ict, index=False)
 
         
-def save_TMY3(srrl15, savefile='Bifacial_TMYfileAll2019_15.csv', includeTrackerData=False):
+def save_TMY3(datecol, timecol, windspeed, temp_amb, Albedo, POA=None, DHI=None, DNI=None, GHI=None, 
+                        savefile='TMY3.csv', trackerdata=None):
     """
     NEW Routine to save TMY3 , assuming the columns Date and Time already exist and are in the right
     1-24 hour format. (this can be done previous to submitting to this function by
@@ -146,17 +147,17 @@ def save_TMY3(srrl15, savefile='Bifacial_TMYfileAll2019_15.csv', includeTrackerD
 
     header = "724666, DENVER/CENTENNIAL [GOLDEN - NREL], CO, -7, 39.742,-105.179, 1829\n"
 
-    savedata = pd.DataFrame({'Date (MM/DD/YYYY)':srrl15['Date (MM/DD/YYYY)'],
-                             'Time (HH:MM)':srrl15['Time (HH:MM)'],
-                             'Wspd (m/s)':srrl15['Avg Wind Speed @ 6ft [m/s]'],
-                             'Dry-bulb (C)':srrl15['Tower Dry Bulb Temp [deg C]'],
-                             'DHI (W/m^2)':srrl15['Diffuse 8-48 (vent) [W/m^2]'],
-                             'DNI (W/m^2)':srrl15['Direct CHP1-1 [W/m^2]'],
-                             'GHI (W/m^2)':srrl15['Global CMP22 (vent/cor) [W/m^2]'],
-                             'Alb (unitless)':srrl15['Albedo (CMP11)']})
+    savedata = pd.DataFrame({'Date (MM/DD/YYYY)':datecol,
+                             'Time (HH:MM)':timecol,
+                             'Wspd (m/s)':windspeed,
+                             'Dry-bulb (C)':temp_amb,
+                             'DHI (W/m^2)':DHI,
+                             'DNI (W/m^2)':DNI,
+                             'GHI (W/m^2)':GHI,
+                             'Alb (unitless)':Albedo})
 
-    if includeTrackerData:
-        savedata['Tracker Angle (degrees)'] = srrl15['Tracker Angle (degrees)']
+    if trackerdata is not None:
+        savedata['Tracker Angle (degrees)'] = trackerdata
 
     with open(savefile, 'w', newline='') as ict:
         # Write the header lines, including the index variable for
@@ -175,10 +176,11 @@ filterdates = (data.index >= '2021-06-01')  & (data.index < '2022-06-01')
 data2 = data[filterdates].copy()
 
 
-# In[8]:
+# In[118]:
 
 
 data2 = data[filterdates].resample('60T', label='left', closed='left').mean().copy()
+data3 = data[filterdates].resample('60T', label='right', closed='right').mean().copy()
 
 
 # In[9]:
@@ -499,6 +501,74 @@ saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.row9Grear,
                     savefile = 'BEST_SAM_60_Comb_03h.csv', includeminute = False)
+
+
+# ## TMY3 FORMAT
+
+# In[40]:
+
+
+real_tmy=r'Other\724010TYA.CSV'
+real_tmy = pd.read_csv(real_tmy, skiprows = [0])
+real_tmy = real_tmy.reset_index()
+
+
+# In[137]:
+
+
+data3 = data3[1:]  # removing the first 0 index
+data3 = data3.reset_index()
+data3['Date (MM/DD/YYYY)'] = real_tmy['Date (MM/DD/YYYY)']
+data3['Time (HH:MM)'] = real_tmy['Time (HH:MM)']
+#data3['Date (MM/DD/YYYY)']=data3['Date (MM/DD/YYYY)'].map(lambda x: str(x)[:-4]+dates.year)+'2021'
+dates = pd.DatetimeIndex(data3['index'])
+#data3['year'] = dates.year
+#data3['year'] = data3['year'].apply(str)
+#data3['month'] = dates.month
+#data3['month'] = data3['month'].apply(str)
+#data3['day'] = dates.day
+#data3['day'] = data3['day'].apply(str:2)
+#data3['Date (MM/DD/YYYY)'] = data3['Date (MM/DD/YYYY)'].map(lambda x: str(x)[:-4])+data3.year
+#data3['Date (MM/DD/YYYY)'] = dates.strftime("%m/%d/%Y")
+
+
+# In[138]:
+
+
+data3['Date (MM/DD/YYYY)'] = dates.strftime("%m/%d/%Y")
+
+
+# In[125]:
+
+
+data3['month'] = dates.month
+data3['month'] = data3['month'].apply(str)
+data3['day'] = dates.day
+data3['day'] = data3['day'].apply(str)
+
+
+# In[135]:
+
+
+data3['Date (MM/DD/YYYY)']
+
+
+# In[136]:
+
+
+dates.strftime("%m/%d/%Y")
+
+
+# In[121]:
+
+
+# 00a - Baseline
+
+save_TMY3( datecol=data3['Date (MM/DD/YYYY)'], timecol = data3['Time (HH:MM)'], 
+                   windspeed = data3.row7wind_speed, temp_amb = data3.temp_ambient_FieldAverage, 
+                   Albedo = data3.sunkitty_GRI_CM22, 
+                   DHI = data3.SRRL_DHI, DNI = data3.SRRL_DNI, GHI = data3.SRRL_GHI,
+                   savefile='TMY3_00a.csv', trackerdata = None)
 
 
 # In[ ]:

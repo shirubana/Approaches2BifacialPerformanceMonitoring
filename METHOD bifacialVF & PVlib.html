@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>1 - Generating InputFile Combinations</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>METHOD bifacialVF & PVlib</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -14572,18 +14572,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     </script>
     <!-- End of mathjax configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="1---Generating-Inputfile-Combinations">1 - Generating Inputfile Combinations<a class="anchor-link" href="#1---Generating-Inputfile-Combinations">&#182;</a></h1>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -14591,8 +14580,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fielddataFolder</span> <span class="o">=</span> <span class="s1">&#39;FieldData&#39;</span>
-<span class="n">InputFilesFolder</span> <span class="o">=</span> <span class="s1">&#39;InputFiles&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">InputFilesFolder</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;InputFiles&#39;</span>
+<span class="n">ResultsFolder</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;TEMP&#39;</span>
+<span class="n">exampleflag</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">debugflag</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 
@@ -14609,11 +14599,79 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">style</span>
 <span class="kn">import</span> <span class="nn">pvlib</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
 <span class="kn">import</span> <span class="nn">os</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">bifacialvf</span>
+
+<span class="c1"># Print bifacialvf Version:</span>
+<span class="n">bifacialvf</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&#39;0.1.7-dev1+71.g202ed86.dirty&#39;</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;timezone&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Etc/GMT+7&#39;</span>
+<span class="n">font</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;family&#39;</span> <span class="p">:</span> <span class="s1">&#39;DejaVu Sans&#39;</span><span class="p">,</span>
+<span class="s1">&#39;weight&#39;</span> <span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+<span class="s1">&#39;size&#39;</span>   <span class="p">:</span> <span class="mi">22</span><span class="p">}</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">font</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14626,11 +14684,48 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;font.size&#39;</span><span class="p">:</span> <span class="mi">22</span><span class="p">})</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### Set Field parameters</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Variables</span>
+<span class="n">tilt</span> <span class="o">=</span> <span class="mi">10</span>                   <span class="c1"># PV tilt (deg)</span>
+<span class="n">sazm</span> <span class="o">=</span> <span class="mi">180</span>                  <span class="c1"># PV Azimuth(deg) or tracker axis direction</span>
+<span class="n">albedo</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># Calculated in previous section from SRRL data. Value is 0.28 up to 11/18/19o</span>
+<span class="n">hub_height</span><span class="o">=</span><span class="mf">1.5</span><span class="o">/</span><span class="mi">2</span>            <span class="c1">#1.5m / 2m collector width</span>
+<span class="n">pitch</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="mf">0.35</span><span class="o">/</span><span class="mi">2</span>              <span class="c1"># 1 / 0.35 where 0.35 is gcr --- row to row spacing in normalized panel lengths. </span>
+<span class="n">rowType</span> <span class="o">=</span> <span class="s2">&quot;interior&quot;</span>        <span class="c1"># RowType(first interior last single)</span>
+<span class="n">transFactor</span> <span class="o">=</span> <span class="mi">0</span>             <span class="c1"># TransmissionFactor(open area fraction)</span>
+<span class="n">sensorsy</span> <span class="o">=</span> <span class="mi">12</span>                <span class="c1"># sensorsy(# hor rows in panel)   &lt;--&gt; THIS ASSUMES LANDSCAPE ORIENTATION </span>
+<span class="n">PVfrontSurface</span> <span class="o">=</span> <span class="s2">&quot;glass&quot;</span>    <span class="c1"># PVfrontSurface(glass or ARglass)</span>
+<span class="n">PVbackSurface</span> <span class="o">=</span> <span class="s2">&quot;glass&quot;</span>     <span class="c1"># PVbackSurface(glass or ARglass)</span>
+
+ <span class="c1"># Calculate PV Output Through Various Methods    </span>
+<span class="n">calculateBilInterpol</span> <span class="o">=</span> <span class="kc">False</span>   <span class="c1"># Only works with landscape at the moment.</span>
+<span class="n">calculatePVMismatch</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">portraitorlandscape</span><span class="o">=</span><span class="s1">&#39;portrait&#39;</span>   <span class="c1"># portrait or landscape</span>
+<span class="n">cellsnum</span> <span class="o">=</span> <span class="mi">72</span>
+<span class="n">bififactor</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="c1"># Tracking instructions</span>
+<span class="n">tracking</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">backtrack</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">limit_angle</span> <span class="o">=</span> <span class="mi">50</span>
 </pre></div>
 
      </div>
@@ -14645,19 +14740,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Read-Pickle-with-all-rows-data">Read Pickle with all rows data<a class="anchor-link" href="#Read-Pickle-with-all-rows-data">&#182;</a></h2>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>This pickle is all the rows together, with data starting on 03/08 and ending on 07/29</p>
-
+<h3 id="Simulate-POA-with-bifacialVf">Simulate POA with bifacialVf<a class="anchor-link" href="#Simulate-POA-with-bifacialVf">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -14666,12 +14749,24 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fielddataFolder</span><span class="p">,</span><span class="s1">&#39;DATA_Release.pickle&#39;</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Clean pickle loaded for Plotting Production Data, # datapoints: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="fm">__len__</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Spanning from&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot; to &quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">TMYtoread</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">InputFilesFolder</span><span class="p">,</span><span class="s1">&#39;TMY3_00a.csv&#39;</span><span class="p">)</span>
+<span class="n">writefiletitle</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ResultsFolder</span><span class="p">,</span> <span class="s1">&#39;TMY3_00a.csv&#39;</span><span class="p">)</span> 
+<span class="n">myTMY3</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">bifacialvf</span><span class="o">.</span><span class="n">bifacialvf</span><span class="o">.</span><span class="n">readInputTMY</span><span class="p">(</span><span class="n">TMYtoread</span><span class="p">)</span>
+<span class="c1"># myTMY3, meta = bifacialvf.bifacialvf.fixintervalTMY(myTMY3,meta)  # Use if data resolution is diff. than hourly</span>
+
+<span class="n">bifacialvf</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">myTMY3</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">writefiletitle</span><span class="o">=</span><span class="n">writefiletitle</span><span class="p">,</span> 
+                 <span class="n">tilt</span><span class="o">=</span><span class="n">tilt</span><span class="p">,</span> <span class="n">sazm</span><span class="o">=</span><span class="n">sazm</span><span class="p">,</span> <span class="n">pitch</span><span class="o">=</span><span class="n">pitch</span><span class="p">,</span> <span class="n">hub_height</span><span class="o">=</span><span class="n">hub_height</span><span class="p">,</span> 
+                 <span class="n">rowType</span><span class="o">=</span><span class="n">rowType</span><span class="p">,</span> <span class="n">transFactor</span><span class="o">=</span><span class="n">transFactor</span><span class="p">,</span> <span class="n">sensorsy</span><span class="o">=</span><span class="n">sensorsy</span><span class="p">,</span> 
+                 <span class="n">PVfrontSurface</span><span class="o">=</span><span class="n">PVfrontSurface</span><span class="p">,</span> <span class="n">PVbackSurface</span><span class="o">=</span><span class="n">PVbackSurface</span><span class="p">,</span> 
+                 <span class="n">albedo</span><span class="o">=</span><span class="n">albedo</span><span class="p">,</span> <span class="n">tracking</span><span class="o">=</span><span class="n">tracking</span><span class="p">,</span> <span class="n">backtrack</span><span class="o">=</span><span class="n">backtrack</span><span class="p">,</span> 
+                 <span class="n">limit_angle</span><span class="o">=</span><span class="n">limit_angle</span><span class="p">,</span> <span class="n">calculatePVMismatch</span><span class="o">=</span><span class="n">calculatePVMismatch</span><span class="p">,</span>
+                 <span class="n">cellsnum</span> <span class="o">=</span> <span class="n">cellsnum</span><span class="p">,</span> <span class="n">bififactor</span><span class="o">=</span><span class="n">bififactor</span><span class="p">,</span>
+                 <span class="n">calculateBilInterpol</span><span class="o">=</span><span class="n">calculateBilInterpol</span><span class="p">,</span>
+                 <span class="n">portraitorlandscape</span><span class="o">=</span><span class="n">portraitorlandscape</span><span class="p">)</span>
+    
 </pre></div>
 
      </div>
@@ -14693,8 +14788,59 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Clean pickle loaded for Plotting Production Data, # datapoints:  1665830
-Spanning from 2019-07-01 00:02:00-07:00  to  2022-09-07 23:20:00-07:00
+<pre>Calculating Sun position with a delta of -30 mins. i.e. 12 is 11:30 sunpos
+Using albedo from TMY3 file.
+Note that at the moment, no validation check is done in the albedo data, so we assume it&#39;s correct and valid.
+
+ 
+********* 
+Running Simulation for TMY3: 
+Location:    DENVER/CENTENNIAL [GOLDEN - NREL]
+Lat:  39.742  Long:  -105.179  Tz  -7.0
+Parameters: tilt:  0   Sazm:  180     Hub_Height :  0.75   Pitch:  2.857142857142857   Row type:  interior   Albedo:  None
+Saving into TEMP\TMY3_00a.csv
+ 
+ 
+Distance between rows for no shading on Dec 21 at 9 am solar time =  0.0
+Actual distance between rows =  1.8571428571428572
+ 
+ ***** IMPORTANT --&gt; THIS SIMULATION Has Tracking Activated
+Backtracking Option is set to:  True
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
+<pre>100%|█████████████████████████████████████████████████████████████████████████████| 8759/8759 [00:59&lt;00:00, 148.07it/s]</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Finished
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
+<pre>
 </pre>
 </div>
 </div>
@@ -14703,304 +14849,17 @@ Spanning from 2019-07-01 00:02:00-07:00  to  2022-09-07 23:20:00-07:00
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</pre></div>
-
-     </div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Load-and-Caculate-performance-with-PVLIB">Load and Caculate performance with PVLIB<a class="anchor-link" href="#Load-and-Caculate-performance-with-PVLIB">&#182;</a></h3>
 </div>
 </div>
 </div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>Index([&#39;row2kWh&#39;, &#39;row2dcp&#39;, &#39;row2Gfront&#39;, &#39;Hydra_current_1&#39;,
-       &#39;Hydra_current_10&#39;, &#39;Hydra_current_11&#39;, &#39;Hydra_current_12&#39;,
-       &#39;Hydra_current_2&#39;, &#39;Hydra_current_3&#39;, &#39;Hydra_current_4&#39;,
-       &#39;Hydra_current_5&#39;, &#39;Hydra_current_6&#39;, &#39;Hydra_current_7&#39;,
-       &#39;Hydra_current_8&#39;, &#39;Hydra_current_9&#39;, &#39;row2temperature_ambient&#39;,
-       &#39;row2tmod_1&#39;, &#39;row2tmod_2&#39;, &#39;row2wind_direction&#39;, &#39;row2wind_speed&#39;,
-       &#39;row3Gfront&#39;, &#39;row3Grear_IMT_West&#39;, &#39;row3Grear_IMT_CenterWest&#39;,
-       &#39;row3Grear_IMT_CenterEast&#39;, &#39;row3Grear_IMT_East&#39;, &#39;row3Grear_CM11&#39;,
-       &#39;row3Grear_Licor&#39;, &#39;row3Gfront_CM11&#39;, &#39;row3Gfront_Licor&#39;, &#39;row4kWh&#39;,
-       &#39;row4dcp&#39;, &#39;row4tmod_1&#39;, &#39;row4tmod_2&#39;, &#39;row5Grear&#39;, &#39;row5Gfront&#39;,
-       &#39;row5temperature_ambient&#39;, &#39;row6tracker_angle&#39;, &#39;row7Grear&#39;,
-       &#39;row7Gfront&#39;, &#39;row7tracker_angle&#39;, &#39;row7wind_direction&#39;,
-       &#39;row7wind_speed&#39;, &#39;row7Grear_IMT_CenterEast&#39;, &#39;row7Grear_IMT_East&#39;,
-       &#39;row7RotatingAlbedometer_CM11_Down&#39;, &#39;row7RotatingAlbedometer_CM11_Up&#39;,
-       &#39;row8dcp&#39;, &#39;row8tmod_1&#39;, &#39;row8tmod_2&#39;, &#39;row8tracker_angle&#39;, &#39;row9kWh&#39;,
-       &#39;row9dcp&#39;, &#39;row9Grear&#39;, &#39;row9Gfront&#39;, &#39;row9tmod_1&#39;, &#39;row9tmod_2&#39;,
-       &#39;row9tmod_3&#39;, &#39;row9tmod_4&#39;, &#39;Grear&#39;, &#39;Gfront&#39;,
-       &#39;temp_ambient_FieldAverage&#39;, &#39;sunkitty_GRI_CM22&#39;, &#39;sunkitty_GRI_IMT&#39;,
-       &#39;sunkitty_GRI_AP&#39;, &#39;sunkitty_GHI_CM22&#39;, &#39;sunkitty_GHI_IMT&#39;,
-       &#39;sunkitty_GHI_AP&#39;, &#39;sunkitty_albedo_CM22&#39;, &#39;sunkitty_albedo_IMT&#39;,
-       &#39;sunkitty_albedo_AP&#39;, &#39;albedo&#39;, &#39;row2Pmp&#39;, &#39;row4Pmp&#39;, &#39;row9Pmp&#39;, &#39;Yf2&#39;,
-       &#39;Yf4&#39;, &#39;Yf8&#39;, &#39;Yf9&#39;, &#39;PR2&#39;, &#39;PR4&#39;, &#39;PR8&#39;, &#39;PR9&#39;, &#39;SRRL_albedo&#39;,
-       &#39;SRRL_windspeed&#39;, &#39;SRRL_DHI&#39;, &#39;SRRL_DNI&#39;, &#39;SRRL_GHI&#39;,
-       &#39;SRRL_temperature_ambient&#39;],
-      dtype=&#39;object&#39;)</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[113]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="n">windspeed</span><span class="p">,</span> <span class="n">temp_amb</span><span class="p">,</span> <span class="n">Albedo</span><span class="p">,</span> <span class="n">POA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">DHI</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">DNI</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">GHI</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                        <span class="n">savefile</span><span class="o">=</span><span class="s1">&#39;Bifacial_SAM.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Saves a dataframe with weather data from SRRL on SAM-friendly format.</span>
-
-<span class="sd">    INPUT:</span>
-<span class="sd">    data</span>
-<span class="sd">    savefile</span>
-<span class="sd">    includeminute  -- especially for hourly data, if SAM input does not have Minutes, it assuems it&#39;s TMY3 format and </span>
-<span class="sd">                      calculates the sun position 30 minutes prior to the hour (i.e. 12 timestamp means sun position at 11:30)</span>
-<span class="sd">                      If minutes are included, it will calculate the sun position at the time of the timestamp (12:00 at 12:00)</span>
-<span class="sd">                      Include minutes if resolution of data is not hourly duh. (but it will calculate at the timestamp)</span>
-<span class="sd">                      </span>
-<span class="sd">    Headers expected by SAM:</span>
-<span class="sd">    ************************* </span>
-<span class="sd">    # Source	Location ID	City	State	Country	Latitude	Longitude	Time Zone	Elevation		</span>
-
-<span class="sd">    Column names</span>
-<span class="sd">    *************</span>
-<span class="sd">    # Year	Month	Day	Hour	Minute	Wspd	Tdry	DHI	DNI	GHI	Albedo</span>
-
-<span class="sd">    OR</span>
-<span class="sd">    # Year	Month	Day	Hour	Wspd	Tdry	DHI	DNI	GHI	Albedo</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-    <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;Source,Location ID,City,State,Country,Latitude,Longitude,Time Zone,Elevation,,,,,,,,,,</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> \
-            <span class="s2">&quot;Measured,724666,DENVER/CENTENNIAL [GOLDEN - NREL],CO,USA,39.742,-105.179,-7,1829,,,,,,,,,,</span><span class="se">\n</span><span class="s2">&quot;</span>
-
-    <span class="n">savedata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Year&#39;</span><span class="p">:</span><span class="n">timestamps</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="s1">&#39;Month&#39;</span><span class="p">:</span><span class="n">timestamps</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="s1">&#39;Day&#39;</span><span class="p">:</span><span class="n">timestamps</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
-                             <span class="s1">&#39;Hour&#39;</span><span class="p">:</span><span class="n">timestamps</span><span class="o">.</span><span class="n">hour</span><span class="p">})</span>
-    <span class="k">if</span> <span class="n">includeminute</span><span class="p">:</span>
-    
-        <span class="n">savedata</span><span class="p">[</span><span class="s1">&#39;Minute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timestamps</span><span class="o">.</span><span class="n">minute</span>
-
-    <span class="n">windspeed</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">windspeed</span><span class="p">)</span>
-    <span class="n">temp_amb</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">temp_amb</span><span class="p">)</span>
-    <span class="n">savedata</span><span class="p">[</span><span class="s1">&#39;Wspd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">windspeed</span>
-    <span class="n">savedata</span><span class="p">[</span><span class="s1">&#39;Tdry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_amb</span>
-    
-    <span class="k">if</span> <span class="n">DHI</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">DHI</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">DHI</span><span class="p">)</span>
-        <span class="n">savedata</span><span class="p">[</span><span class="s1">&#39;DHI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DHI</span>
-    
-    <span class="k">if</span> <span class="n">DNI</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">DNI</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">DNI</span><span class="p">)</span>
-        <span class="n">savedata</span><span class="p">[</span><span class="s1">&#39;DNI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DNI</span>
-                            
-    <span class="k">if</span> <span class="n">GHI</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">GHI</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">GHI</span><span class="p">)</span>
-        <span class="n">savedata</span><span class="p">[</span><span class="s1">&#39;GHI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">GHI</span>
-    
-    <span class="k">if</span> <span class="n">POA</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">POA</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">POA</span><span class="p">)</span>
-        <span class="n">savedata</span><span class="p">[</span><span class="s1">&#39;POA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">POA</span>
-        
-    <span class="k">if</span> <span class="n">Albedo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">Albedo</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Albedo</span><span class="p">)</span>
-        <span class="n">savedata</span><span class="p">[</span><span class="s1">&#39;Albedo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Albedo</span>
-      
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">savefile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ict</span><span class="p">:</span>
-        <span class="c1"># Write the header lines, including the index variable for</span>
-        <span class="c1"># the last one if you&#39;re letting Pandas produce that for you.</span>
-        <span class="c1"># (see above).</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
-            <span class="n">ict</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
-        <span class="n">savedata</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">ict</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-        
-<span class="k">def</span> <span class="nf">save_TMY3</span><span class="p">(</span><span class="n">datecol</span><span class="p">,</span> <span class="n">timecol</span><span class="p">,</span> <span class="n">windspeed</span><span class="p">,</span> <span class="n">temp_amb</span><span class="p">,</span> <span class="n">Albedo</span><span class="p">,</span> <span class="n">POA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">DHI</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">DNI</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">GHI</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                        <span class="n">savefile</span><span class="o">=</span><span class="s1">&#39;TMY3.csv&#39;</span><span class="p">,</span> <span class="n">trackerdata</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    NEW Routine to save TMY3 , assuming the columns Date and Time already exist and are in the right</span>
-<span class="sd">    1-24 hour format. (this can be done previous to submitting to this function by</span>
-<span class="sd">    reading a real CSV and joining those columns)</span>
-<span class="sd">    </span>
-<span class="sd">    Saves a dataframe with weathe data from SRRL in TMY3 data format.</span>
-<span class="sd">    </span>
-<span class="sd">    if includeTrackerData is True, it will also save the tracker data column.</span>
-<span class="sd">    </span>
-
-<span class="sd">    Headers expected by TMY3:</span>
-<span class="sd">    ************************* </span>
-<span class="sd">    # Location ID	City	State	Time Zone	Latitude	Longitude	Elevation</span>
-
-<span class="sd">    Column names</span>
-<span class="sd">    *************</span>
-<span class="sd">    # Date (MM/DD/YYYY)		Time (HH:MM)	GHI (W/m^2))	DNI (W/m^2))	DHI (W/m^2)		Wspd (m/s)	</span>
-<span class="sd">    Dry-bulb (C)	Alb (unitless)	</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-    <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;724666, DENVER/CENTENNIAL [GOLDEN - NREL], CO, -7, 39.742,-105.179, 1829</span><span class="se">\n</span><span class="s2">&quot;</span>
-
-    <span class="n">savedata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Date (MM/DD/YYYY)&#39;</span><span class="p">:</span><span class="n">datecol</span><span class="p">,</span>
-                             <span class="s1">&#39;Time (HH:MM)&#39;</span><span class="p">:</span><span class="n">timecol</span><span class="p">,</span>
-                             <span class="s1">&#39;Wspd (m/s)&#39;</span><span class="p">:</span><span class="n">windspeed</span><span class="p">,</span>
-                             <span class="s1">&#39;Dry-bulb (C)&#39;</span><span class="p">:</span><span class="n">temp_amb</span><span class="p">,</span>
-                             <span class="s1">&#39;DHI (W/m^2)&#39;</span><span class="p">:</span><span class="n">DHI</span><span class="p">,</span>
-                             <span class="s1">&#39;DNI (W/m^2)&#39;</span><span class="p">:</span><span class="n">DNI</span><span class="p">,</span>
-                             <span class="s1">&#39;GHI (W/m^2)&#39;</span><span class="p">:</span><span class="n">GHI</span><span class="p">,</span>
-                             <span class="s1">&#39;Alb (unitless)&#39;</span><span class="p">:</span><span class="n">Albedo</span><span class="p">})</span>
-
-    <span class="k">if</span> <span class="n">trackerdata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">savedata</span><span class="p">[</span><span class="s1">&#39;Tracker Angle (degrees)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trackerdata</span>
-
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">savefile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ict</span><span class="p">:</span>
-        <span class="c1"># Write the header lines, including the index variable for</span>
-        <span class="c1"># the last one if you&#39;re letting Pandas produce that for you.</span>
-        <span class="c1"># (see above).</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
-            <span class="n">ict</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
-        <span class="n">savedata</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">ict</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">filterdates</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="s1">&#39;2021-06-01&#39;</span><span class="p">)</span>  <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="o">&lt;</span> <span class="s1">&#39;2022-06-01&#39;</span><span class="p">)</span> 
-<span class="n">data2</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">filterdates</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[118]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data2</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">filterdates</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;60T&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">data3</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">filterdates</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;60T&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data2</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>Index([&#39;row2kWh&#39;, &#39;row2dcp&#39;, &#39;row2Gfront&#39;, &#39;Hydra_current_1&#39;,
-       &#39;Hydra_current_10&#39;, &#39;Hydra_current_11&#39;, &#39;Hydra_current_12&#39;,
-       &#39;Hydra_current_2&#39;, &#39;Hydra_current_3&#39;, &#39;Hydra_current_4&#39;,
-       &#39;Hydra_current_5&#39;, &#39;Hydra_current_6&#39;, &#39;Hydra_current_7&#39;,
-       &#39;Hydra_current_8&#39;, &#39;Hydra_current_9&#39;, &#39;row2temperature_ambient&#39;,
-       &#39;row2tmod_1&#39;, &#39;row2tmod_2&#39;, &#39;row2wind_direction&#39;, &#39;row2wind_speed&#39;,
-       &#39;row3Gfront&#39;, &#39;row3Grear_IMT_West&#39;, &#39;row3Grear_IMT_CenterWest&#39;,
-       &#39;row3Grear_IMT_CenterEast&#39;, &#39;row3Grear_IMT_East&#39;, &#39;row3Grear_CM11&#39;,
-       &#39;row3Grear_Licor&#39;, &#39;row3Gfront_CM11&#39;, &#39;row3Gfront_Licor&#39;, &#39;row4kWh&#39;,
-       &#39;row4dcp&#39;, &#39;row4tmod_1&#39;, &#39;row4tmod_2&#39;, &#39;row5Grear&#39;, &#39;row5Gfront&#39;,
-       &#39;row5temperature_ambient&#39;, &#39;row6tracker_angle&#39;, &#39;row7Grear&#39;,
-       &#39;row7Gfront&#39;, &#39;row7tracker_angle&#39;, &#39;row7wind_direction&#39;,
-       &#39;row7wind_speed&#39;, &#39;row7Grear_IMT_CenterEast&#39;, &#39;row7Grear_IMT_East&#39;,
-       &#39;row7RotatingAlbedometer_CM11_Down&#39;, &#39;row7RotatingAlbedometer_CM11_Up&#39;,
-       &#39;row8dcp&#39;, &#39;row8tmod_1&#39;, &#39;row8tmod_2&#39;, &#39;row8tracker_angle&#39;, &#39;row9kWh&#39;,
-       &#39;row9dcp&#39;, &#39;row9Grear&#39;, &#39;row9Gfront&#39;, &#39;row9tmod_1&#39;, &#39;row9tmod_2&#39;,
-       &#39;row9tmod_3&#39;, &#39;row9tmod_4&#39;, &#39;Grear&#39;, &#39;Gfront&#39;,
-       &#39;temp_ambient_FieldAverage&#39;, &#39;sunkitty_GRI_CM22&#39;, &#39;sunkitty_GRI_IMT&#39;,
-       &#39;sunkitty_GRI_AP&#39;, &#39;sunkitty_GHI_CM22&#39;, &#39;sunkitty_GHI_IMT&#39;,
-       &#39;sunkitty_GHI_AP&#39;, &#39;sunkitty_albedo_CM22&#39;, &#39;sunkitty_albedo_IMT&#39;,
-       &#39;sunkitty_albedo_AP&#39;, &#39;albedo&#39;, &#39;row2Pmp&#39;, &#39;row4Pmp&#39;, &#39;row9Pmp&#39;, &#39;Yf2&#39;,
-       &#39;Yf4&#39;, &#39;Yf8&#39;, &#39;Yf9&#39;, &#39;PR2&#39;, &#39;PR4&#39;, &#39;PR8&#39;, &#39;PR9&#39;, &#39;SRRL_albedo&#39;,
-       &#39;SRRL_windspeed&#39;, &#39;SRRL_DHI&#39;, &#39;SRRL_DNI&#39;, &#39;SRRL_GHI&#39;,
-       &#39;SRRL_temperature_ambient&#39;],
-      dtype=&#39;object&#39;)</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -15009,205 +14868,7 @@ Spanning from 2019-07-01 00:02:00-07:00  to  2022-09-07 23:20:00-07:00
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 00a - Baseline</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">DHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DHI</span><span class="p">,</span> <span class="n">DNI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DNI</span><span class="p">,</span> <span class="n">GHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_GHI</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_00a.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 00b - Baseline sunkitty_albedo_IMT</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_albedo_IMT</span><span class="p">,</span> 
-                    <span class="n">DHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DHI</span><span class="p">,</span> <span class="n">DNI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DNI</span><span class="p">,</span> <span class="n">GHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_GHI</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_00b.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 00c - Baseline sunkitty_albedo_AP</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_albedo_AP</span><span class="p">,</span> 
-                    <span class="n">DHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DHI</span><span class="p">,</span> <span class="n">DNI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DNI</span><span class="p">,</span> <span class="n">GHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_GHI</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_00c.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 00d - Baseline SRRL_albedo</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_albedo</span><span class="p">,</span> 
-                    <span class="n">DHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DHI</span><span class="p">,</span> <span class="n">DNI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DNI</span><span class="p">,</span> <span class="n">GHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_GHI</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_00d.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 00e - Baseline Albedo = 0.22</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="mf">0.22</span><span class="p">,</span>
-                    <span class="n">DHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DHI</span><span class="p">,</span> <span class="n">DNI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DNI</span><span class="p">,</span> <span class="n">GHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_GHI</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_00e.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## FINISH</span>
-<span class="c1"># 00f - Baseline MONTHLY ALBEDOS</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_albedo</span><span class="p">,</span> 
-                    <span class="n">DHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DHI</span><span class="p">,</span> <span class="n">DNI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DNI</span><span class="p">,</span> <span class="n">GHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_GHI</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_00f.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">foo2</span> <span class="o">=</span> <span class="n">data2</span><span class="p">[</span><span class="s1">&#39;SRRL_albedo&#39;</span><span class="p">]</span>
-<span class="n">foo2</span> <span class="o">=</span> <span class="n">foo2</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;1M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">foo2</span> <span class="o">=</span> <span class="n">foo2</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;60T&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;ffill&#39;</span><span class="p">)</span>
-<span class="n">foo</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="n">foo</span><span class="p">[</span><span class="s1">&#39;SRRL_albedo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data2</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">foo</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">to_period</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">))[</span><span class="s1">&#39;SRRL_albedo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">))</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>2021-06-30 00:00:00-07:00    0.109330
-2021-06-30 01:00:00-07:00    0.109330
-2021-06-30 02:00:00-07:00    0.109330
-2021-06-30 03:00:00-07:00    0.109330
-2021-06-30 04:00:00-07:00    0.109330
-                               ...   
-2022-05-30 20:00:00-07:00    0.108002
-2022-05-30 21:00:00-07:00    0.108002
-2022-05-30 22:00:00-07:00    0.108002
-2022-05-30 23:00:00-07:00    0.108002
-2022-05-31 00:00:00-07:00    0.127146
-Freq: 60T, Name: SRRL_albedo, Length: 8041, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## ??? Interest NSRDB Satellite data ---&gt; </span>
-<span class="c1"># 00g - Baseline SATELLITE ALBEDOS FOR A TYPICAL YEAR? </span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_albedo</span><span class="p">,</span> 
-                    <span class="n">DHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DHI</span><span class="p">,</span> <span class="n">DNI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_DNI</span><span class="p">,</span> <span class="n">GHI</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">SRRL_GHI</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_00g.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">bifacialvf</span><span class="o">.</span><span class="n">loadVFresults</span><span class="p">(</span><span class="n">writefiletitle</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15222,7 +14883,7 @@ Freq: 60T, Name: SRRL_albedo, Length: 8041, dtype: float64</pre>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="0-POA-Front:">0 POA Front:<a class="anchor-link" href="#0-POA-Front:">&#182;</a></h3>
+<h3 id="Retrieve-module-data-from-CEC-database">Retrieve module data from CEC database<a class="anchor-link" href="#Retrieve-module-data-from-CEC-database">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -15231,14 +14892,18 @@ Freq: 60T, Name: SRRL_albedo, Length: 8041, dtype: float64</pre>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 01a - POA row5Gfront</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row5Gfront</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_01a.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">pvlib</span><span class="o">.</span><span class="n">pvsystem</span><span class="o">.</span><span class="n">retrieve_sam</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;CECMod&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+<span class="c1"># MODIFY THIS FOR YOUR TYPE OF MODULE</span>
+<span class="n">modfilter1</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SANYO&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">db</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;VBHN325SA16&#39;</span><span class="p">)</span>
+<span class="n">mymod1</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">modfilter1</span><span class="p">]</span>
+
+<span class="c1"># Sanity check, in case the database gets updated and the module name slightly changes and doesn&#39;t find it. </span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mymod1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check filtering&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15246,46 +14911,17 @@ Freq: 60T, Name: SRRL_albedo, Length: 8041, dtype: float64</pre>
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 01b - POA row2Gfront</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row2Gfront</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_01b.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Calculate-SAPM-Cell-Temperature">Calculate SAPM Cell Temperature<a class="anchor-link" href="#Calculate-SAPM-Cell-Temperature">&#182;</a></h3>
 </div>
 </div>
 </div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 01c - POA row3Gfront</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Gfront</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_01c.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -15294,71 +14930,9 @@ Freq: 60T, Name: SRRL_albedo, Length: 8041, dtype: float64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 01d - POA row7Gfront</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7Gfront</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_01d.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 01e - POA row9Gfront</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row9Gfront</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_01e.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 01f - POA row3Gfront_CM11</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Gfront_CM11</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_01f.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 01g - POA row3Gfront_Licor</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Gfront_Licor</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_01f.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pvlib.temperature</span> <span class="kn">import</span> <span class="n">TEMPERATURE_MODEL_PARAMETERS</span>
+<span class="n">tpmBifiGG</span> <span class="o">=</span> <span class="p">(</span> <span class="n">TEMPERATURE_MODEL_PARAMETERS</span><span class="p">[</span><span class="s1">&#39;sapm&#39;</span><span class="p">][</span><span class="s1">&#39;open_rack_glass_polymer&#39;</span><span class="p">])</span> <span class="c1"># temperature_model_parameters</span>
+<span class="n">tpmMonoBS</span> <span class="o">=</span> <span class="p">(</span> <span class="n">TEMPERATURE_MODEL_PARAMETERS</span><span class="p">[</span><span class="s1">&#39;sapm&#39;</span><span class="p">][</span><span class="s1">&#39;open_rack_glass_glass&#39;</span><span class="p">])</span> <span class="c1"># temperature_model_parameters</span>
 </pre></div>
 
      </div>
@@ -15373,7 +14947,37 @@ Freq: 60T, Name: SRRL_albedo, Length: 8041, dtype: float64</pre>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="POA-Front-+-Rear">POA Front + Rear<a class="anchor-link" href="#POA-Front-+-Rear">&#182;</a></h3>
+<p>Note: need to calcualte POA average and consider bifaciality factor depending on case modeled. Using first value of front POA for this example</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bifacialityfactor</span> <span class="o">=</span> <span class="mf">0.65</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;bifi_celltemp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pvlib</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">sapm_cell</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">No_1_RowFrontGTI</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">Tamb</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">VWind</span><span class="p">,</span> <span class="n">tpmBifiGG</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">tpmBifiGG</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="n">tpmBifiGG</span><span class="p">[</span><span class="s1">&#39;deltaT&#39;</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;mono_celltemp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pvlib</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">sapm_cell</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">No_1_RowFrontGTI</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">Tamb</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">VWind</span><span class="p">,</span> <span class="n">tpmMonoBS</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">tpmMonoBS</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="n">tpmMonoBS</span><span class="p">[</span><span class="s1">&#39;deltaT&#39;</span><span class="p">])</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Calculate-Performance-with-PVLib">Calculate Performance with PVLib<a class="anchor-link" href="#Calculate-Performance-with-PVLib">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -15385,331 +14989,45 @@ Freq: 60T, Name: SRRL_albedo, Length: 8041, dtype: float64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[25]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 02a - POA row5Gfront + data2.Grear,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">Grear</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_02a.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[26]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 02b - POA row2Gfront + data2.Grear,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row2Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">Grear</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_02b.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 02c - POA row3Gfront + data2.Grear,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">Grear</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_02c.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[28]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 02d - POA row7Gfront + data2.Grear,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">Grear</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_02d.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[29]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 02e - POA row9Gfront + data2.Grear,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row9Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">Grear</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_02e.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[30]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 02f - POA row3Gfront_CM11 + data2.row3Grear_CM11,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Gfront_CM11</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Grear_CM11</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_02f.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[31]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 02g - POA row3Gfront_Licor + data2.row3Grear_Licor,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Gfront_Licor</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Grear_Licor</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_02f.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="3-POA-Front-+-Grear-single-locations">3 POA Front + Grear single locations<a class="anchor-link" href="#3-POA-Front-+-Grear-single-locations">&#182;</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[32]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 03a - POA Gfront + data2.row3Grear_IMT_West,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Grear_IMT_West</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_03a.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[33]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 03b - POA Gfront + data2.row3Grear_IMT_CenterWest,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Grear_IMT_CenterWest</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_03b.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[34]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 03c - POA Gfront + data2.row3Grear_IMT_CenterEast,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Grear_IMT_CenterEast</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_03c.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[35]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 03d - POA Gfront + data2.row3Grear_IMT_East,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row3Grear_IMT_East</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_03d.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[36]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 03e - POA Gfront + data2.row5Grear,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row5Grear</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_03e.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[37]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 03f - POA Gfront + data2.row7Grear_IMT_CenterEast,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7Grear_IMT_CenterEast</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_03f.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[38]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 03g - POA Gfront + data2.row7Grear_IMT_East,</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7Grear_IMT_East</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_03g.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[39]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 03h - POA Gfront + data2.row9Grear</span>
-<span class="n">saveSAM_WeatherFile</span><span class="p">(</span><span class="n">timestamps</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">POA</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">Gfront</span> <span class="o">+</span> <span class="n">data2</span><span class="o">.</span><span class="n">row9Grear</span><span class="p">,</span>
-                    <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;BEST_SAM_60_Comb_03h.csv&#39;</span><span class="p">,</span> <span class="n">includeminute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="TMY3-FORMAT">TMY3 FORMAT<a class="anchor-link" href="#TMY3-FORMAT">&#182;</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[40]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">real_tmy</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Other\724010TYA.CSV&#39;</span>
-<span class="n">real_tmy</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">real_tmy</span><span class="p">,</span> <span class="n">skiprows</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">real_tmy</span> <span class="o">=</span> <span class="n">real_tmy</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">calculatePerformance</span><span class="p">(</span><span class="n">effective_irradiance</span><span class="p">,</span> <span class="n">temp_cell</span><span class="p">,</span> <span class="n">CECMod</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    The module parameters are given at the reference condition. </span>
+<span class="sd">    Use pvlib.pvsystem.calcparams_cec() to generate the five SDM </span>
+<span class="sd">    parameters at your desired irradiance and temperature to use </span>
+<span class="sd">    with pvlib.pvsystem.singlediode() to calculate the IV curve information.:</span>
+<span class="sd">    </span>
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    df : dataframe</span>
+<span class="sd">        Dataframe with the &#39;effective_irradiance&#39; columns and &#39;temp_cell&#39;</span>
+<span class="sd">        columns.</span>
+<span class="sd">    CECMod : Dict</span>
+<span class="sd">        Dictionary with CEC Module PArameters for the module selected. Must </span>
+<span class="sd">        contain at minimum  alpha_sc, a_ref, I_L_ref, I_o_ref, R_sh_ref,</span>
+<span class="sd">        R_s, Adjust</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">IL</span><span class="p">,</span> <span class="n">I0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">Rsh</span><span class="p">,</span> <span class="n">nNsVth</span> <span class="o">=</span> <span class="n">pvlib</span><span class="o">.</span><span class="n">pvsystem</span><span class="o">.</span><span class="n">calcparams_cec</span><span class="p">(</span>
+        <span class="n">effective_irradiance</span><span class="o">=</span><span class="n">effective_irradiance</span><span class="p">,</span>
+        <span class="n">temp_cell</span><span class="o">=</span><span class="n">temp_cell</span><span class="p">,</span>
+        <span class="n">alpha_sc</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">CECMod</span><span class="o">.</span><span class="n">alpha_sc</span><span class="p">),</span>
+        <span class="n">a_ref</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">CECMod</span><span class="o">.</span><span class="n">a_ref</span><span class="p">),</span>
+        <span class="n">I_L_ref</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">CECMod</span><span class="o">.</span><span class="n">I_L_ref</span><span class="p">),</span>
+        <span class="n">I_o_ref</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">CECMod</span><span class="o">.</span><span class="n">I_o_ref</span><span class="p">),</span>
+        <span class="n">R_sh_ref</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">CECMod</span><span class="o">.</span><span class="n">R_sh_ref</span><span class="p">),</span>
+        <span class="n">R_s</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">CECMod</span><span class="o">.</span><span class="n">R_s</span><span class="p">),</span>
+        <span class="n">Adjust</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">CECMod</span><span class="o">.</span><span class="n">Adjust</span><span class="p">)</span>
+        <span class="p">)</span>
+    
+    <span class="n">IVcurve_info</span> <span class="o">=</span> <span class="n">pvlib</span><span class="o">.</span><span class="n">pvsystem</span><span class="o">.</span><span class="n">singlediode</span><span class="p">(</span>
+        <span class="n">photocurrent</span><span class="o">=</span><span class="n">IL</span><span class="p">,</span>
+        <span class="n">saturation_current</span><span class="o">=</span><span class="n">I0</span><span class="p">,</span>
+        <span class="n">resistance_series</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span>
+        <span class="n">resistance_shunt</span><span class="o">=</span><span class="n">Rsh</span><span class="p">,</span>
+        <span class="n">nNsVth</span><span class="o">=</span><span class="n">nNsVth</span> 
+        <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">IVcurve_info</span><span class="p">[</span><span class="s1">&#39;p_mp&#39;</span><span class="p">]</span>
 </pre></div>
 
      </div>
@@ -15722,23 +15040,11 @@ Freq: 60T, Name: SRRL_albedo, Length: 8041, dtype: float64</pre>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[137]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[26]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data3</span> <span class="o">=</span> <span class="n">data3</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># removing the first 0 index</span>
-<span class="n">data3</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-<span class="n">data3</span><span class="p">[</span><span class="s1">&#39;Date (MM/DD/YYYY)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">real_tmy</span><span class="p">[</span><span class="s1">&#39;Date (MM/DD/YYYY)&#39;</span><span class="p">]</span>
-<span class="n">data3</span><span class="p">[</span><span class="s1">&#39;Time (HH:MM)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">real_tmy</span><span class="p">[</span><span class="s1">&#39;Time (HH:MM)&#39;</span><span class="p">]</span>
-<span class="c1">#data3[&#39;Date (MM/DD/YYYY)&#39;]=data3[&#39;Date (MM/DD/YYYY)&#39;].map(lambda x: str(x)[:-4]+dates.year)+&#39;2021&#39;</span>
-<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span><span class="n">data3</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">])</span>
-<span class="c1">#data3[&#39;year&#39;] = dates.year</span>
-<span class="c1">#data3[&#39;year&#39;] = data3[&#39;year&#39;].apply(str)</span>
-<span class="c1">#data3[&#39;month&#39;] = dates.month</span>
-<span class="c1">#data3[&#39;month&#39;] = data3[&#39;month&#39;].apply(str)</span>
-<span class="c1">#data3[&#39;day&#39;] = dates.day</span>
-<span class="c1">#data3[&#39;day&#39;] = data3[&#39;day&#39;].apply(str:2)</span>
-<span class="c1">#data3[&#39;Date (MM/DD/YYYY)&#39;] = data3[&#39;Date (MM/DD/YYYY)&#39;].map(lambda x: str(x)[:-4])+data3.year</span>
-<span class="c1">#data3[&#39;Date (MM/DD/YYYY)&#39;] = dates.strftime(&quot;%m/%d/%Y&quot;)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;S1_dcP&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculatePerformance</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">No_1_RowFrontGTI</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">bifi_celltemp</span><span class="p">,</span> <span class="n">mymod1</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;S2_dcP&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculatePerformance</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">No_1_RowFrontGTI</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">mono_celltemp</span><span class="p">,</span> <span class="n">mymod1</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15760,55 +15066,11 @@ Freq: 60T, Name: SRRL_albedo, Length: 8041, dtype: float64</pre>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">KeyError</span>                                  Traceback (most recent call last)
-File <span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\pandas\core\indexes\base.py:3621</span>, in <span class="ansi-cyan-fg">Index.get_loc</span><span class="ansi-blue-intense-fg ansi-bold">(self, key, method, tolerance)</span>
-<span class="ansi-green-fg">   3620</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-<span class="ansi-green-intense-fg ansi-bold">-&gt; 3621</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_engine</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_loc</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">casted_key</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">   3622</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">KeyError</span> <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> err:
-
-File <span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\pandas\_libs\index.pyx:136</span>, in <span class="ansi-cyan-fg">pandas._libs.index.IndexEngine.get_loc</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
-
-File <span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\pandas\_libs\index.pyx:163</span>, in <span class="ansi-cyan-fg">pandas._libs.index.IndexEngine.get_loc</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
-
-File <span class="ansi-green-intense-fg ansi-bold">pandas\_libs\hashtable_class_helper.pxi:5198</span>, in <span class="ansi-cyan-fg">pandas._libs.hashtable.PyObjectHashTable.get_item</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
-
-File <span class="ansi-green-intense-fg ansi-bold">pandas\_libs\hashtable_class_helper.pxi:5206</span>, in <span class="ansi-cyan-fg">pandas._libs.hashtable.PyObjectHashTable.get_item</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
-
-<span class="ansi-red-intense-fg ansi-bold">KeyError</span>: &#39;dates.strftime(&#34;%m/%d/%Y&#34;)&#39;
-
-The above exception was the direct cause of the following exception:
-
-<span class="ansi-red-intense-fg ansi-bold">KeyError</span>                                  Traceback (most recent call last)
-Input <span class="ansi-green-intense-fg ansi-bold">In [137]</span>, in <span class="ansi-cyan-fg">&lt;cell line: 14&gt;</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
-<span class="ansi-green-fg">      6</span> dates <span style="color: rgb(98,98,98)">=</span> pd<span style="color: rgb(98,98,98)">.</span>DatetimeIndex(data3[<span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">index</span><span style="color: rgb(175,0,0)">&#39;</span>])
-<span class="ansi-green-fg">      7</span> <span style="color: rgb(95,135,135)">#data3[&#39;year&#39;] = dates.year</span>
-<span class="ansi-green-fg">      8</span> <span style="color: rgb(95,135,135)">#data3[&#39;year&#39;] = data3[&#39;year&#39;].apply(str)</span>
-<span class="ansi-green-fg">      9</span> <span style="color: rgb(95,135,135)">#data3[&#39;month&#39;] = dates.month</span>
-<span class="ansi-green-intense-fg ansi-bold">   (...)</span>
-<span class="ansi-green-fg">     12</span> <span style="color: rgb(95,135,135)">#data3[&#39;day&#39;] = data3[&#39;day&#39;].apply(str:2)</span>
-<span class="ansi-green-fg">     13</span> <span style="color: rgb(95,135,135)">#data3[&#39;Date (MM/DD/YYYY)&#39;] = data3[&#39;Date (MM/DD/YYYY)&#39;].map(lambda x: str(x)[:-4])+data3.year</span>
-<span class="ansi-green-intense-fg ansi-bold">---&gt; 14</span> <span class="ansi-yellow-bg">data3</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">dates.strftime(</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#34;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">%</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">m/</span><span class="ansi-yellow-bg ansi-bold" style="color: rgb(175,95,135)">%d</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">/</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">%</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">Y</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#34;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">)</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">]</span>
-
-File <span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\pandas\core\frame.py:3505</span>, in <span class="ansi-cyan-fg">DataFrame.__getitem__</span><span class="ansi-blue-intense-fg ansi-bold">(self, key)</span>
-<span class="ansi-green-fg">   3503</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>columns<span style="color: rgb(98,98,98)">.</span>nlevels <span style="color: rgb(98,98,98)">&gt;</span> <span style="color: rgb(98,98,98)">1</span>:
-<span class="ansi-green-fg">   3504</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_getitem_multilevel(key)
-<span class="ansi-green-intense-fg ansi-bold">-&gt; 3505</span> indexer <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">columns</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_loc</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">key</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">   3506</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> is_integer(indexer):
-<span class="ansi-green-fg">   3507</span>     indexer <span style="color: rgb(98,98,98)">=</span> [indexer]
-
-File <span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\pandas\core\indexes\base.py:3623</span>, in <span class="ansi-cyan-fg">Index.get_loc</span><span class="ansi-blue-intense-fg ansi-bold">(self, key, method, tolerance)</span>
-<span class="ansi-green-fg">   3621</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_engine<span style="color: rgb(98,98,98)">.</span>get_loc(casted_key)
-<span class="ansi-green-fg">   3622</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">KeyError</span> <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> err:
-<span class="ansi-green-intense-fg ansi-bold">-&gt; 3623</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">KeyError</span>(key) <span class="ansi-bold" style="color: rgb(0,135,0)">from</span> <span class="ansi-bold" style="color: rgb(0,0,255)">err</span>
-<span class="ansi-green-fg">   3624</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">TypeError</span>:
-<span class="ansi-green-fg">   3625</span>     <span style="color: rgb(95,135,135)"># If we have a listlike key, _check_indexing_error will raise</span>
-<span class="ansi-green-fg">   3626</span>     <span style="color: rgb(95,135,135)">#  InvalidIndexError. Otherwise we fall through and re-raise</span>
-<span class="ansi-green-fg">   3627</span>     <span style="color: rgb(95,135,135)">#  the TypeError.</span>
-<span class="ansi-green-fg">   3628</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_check_indexing_error(key)
-
-<span class="ansi-red-intense-fg ansi-bold">KeyError</span>: &#39;dates.strftime(&#34;%m/%d/%Y&#34;)&#39;</pre>
+<pre>C:\Users\sayala\Anaconda3\lib\site-packages\pvlib\singlediode.py:613: RuntimeWarning: overflow encountered in exp
+  np.exp((Rs[idx_p] * (IL[idx_p] + I0[idx_p]) + V[idx_p]) /
+C:\Users\sayala\Anaconda3\lib\site-packages\pvlib\singlediode.py:613: RuntimeWarning: overflow encountered in exp
+  np.exp((Rs[idx_p] * (IL[idx_p] + I0[idx_p]) + V[idx_p]) /
+</pre>
 </div>
 </div>
 
@@ -15816,161 +15078,17 @@ File <span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[138]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data3</span><span class="p">[</span><span class="s1">&#39;Date (MM/DD/YYYY)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dates</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m/</span><span class="si">%d</span><span class="s2">/%Y&quot;</span><span class="p">)</span>
-</pre></div>
-
-     </div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Save-results">Save results<a class="anchor-link" href="#Save-results">&#182;</a></h3>
 </div>
 </div>
 </div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[125]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data3</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dates</span><span class="o">.</span><span class="n">month</span>
-<span class="n">data3</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data3</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-<span class="n">data3</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dates</span><span class="o">.</span><span class="n">day</span>
-<span class="n">data3</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data3</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[135]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data3</span><span class="p">[</span><span class="s1">&#39;Date (MM/DD/YYYY)&#39;</span><span class="p">]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[135]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>0       01/01/2021
-1       01/01/2021
-2       01/01/2021
-3       01/01/2021
-4       01/01/2021
-           ...    
-8755    12/31/2022
-8756    12/31/2022
-8757    12/31/2022
-8758    12/31/2022
-8759    12/31/2022
-Name: Date (MM/DD/YYYY), Length: 8760, dtype: object</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[136]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dates</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m/</span><span class="si">%d</span><span class="s2">/%Y&quot;</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[136]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>Index([&#39;06/01/2021&#39;, &#39;06/01/2021&#39;, &#39;06/01/2021&#39;, &#39;06/01/2021&#39;, &#39;06/01/2021&#39;,
-       &#39;06/01/2021&#39;, &#39;06/01/2021&#39;, &#39;06/01/2021&#39;, &#39;06/01/2021&#39;, &#39;06/01/2021&#39;,
-       ...
-       &#39;05/31/2022&#39;, &#39;05/31/2022&#39;, &#39;05/31/2022&#39;, &#39;05/31/2022&#39;, &#39;05/31/2022&#39;,
-       &#39;05/31/2022&#39;, &#39;05/31/2022&#39;, &#39;05/31/2022&#39;, &#39;05/31/2022&#39;, &#39;06/01/2022&#39;],
-      dtype=&#39;object&#39;, name=&#39;index&#39;, length=8760)</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[121]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> <span class="c1"># 00a - Baseline</span>
-
-<span class="n">save_TMY3</span><span class="p">(</span> <span class="n">datecol</span><span class="o">=</span><span class="n">data3</span><span class="p">[</span><span class="s1">&#39;Date (MM/DD/YYYY)&#39;</span><span class="p">],</span> <span class="n">timecol</span> <span class="o">=</span> <span class="n">data3</span><span class="p">[</span><span class="s1">&#39;Time (HH:MM)&#39;</span><span class="p">],</span> 
-                    <span class="n">windspeed</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">row7wind_speed</span><span class="p">,</span> <span class="n">temp_amb</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">temp_ambient_FieldAverage</span><span class="p">,</span> 
-                    <span class="n">Albedo</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">sunkitty_GRI_CM22</span><span class="p">,</span> 
-                    <span class="n">DHI</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">SRRL_DHI</span><span class="p">,</span> <span class="n">DNI</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">SRRL_DNI</span><span class="p">,</span> <span class="n">GHI</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">SRRL_GHI</span><span class="p">,</span>
-                    <span class="n">savefile</span><span class="o">=</span><span class="s1">&#39;TMY3_00a.csv&#39;</span><span class="p">,</span> <span class="n">trackerdata</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
