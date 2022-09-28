@@ -4,15 +4,6 @@
 # In[1]:
 
 
-InputFilesFolder = r'InputFiles'
-ResultsFolder = r'TEMP'
-exampleflag = False
-debugflag = False
-
-
-# In[2]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,6 +12,16 @@ import pvlib
 import datetime
 import pprint
 import os
+
+
+# In[2]:
+
+
+path_parent = os.path.dirname(os.getcwd())
+InputFilesFolder = os.path.join(path_parent,'InputFiles')
+ResultsFolder = r'TEMP'
+exampleflag = False
+debugflag = False
 
 
 # In[3]:
@@ -43,13 +44,13 @@ plt.rc('font', **font)
 plt.rcParams['figure.figsize'] = (12, 5)
 
 
-# In[ ]:
+# In[5]:
 
 
 ### Set Field parameters
 
 
-# In[ ]:
+# In[6]:
 
 
 # Variables
@@ -79,7 +80,7 @@ limit_angle = 50
 
 # ### Simulate POA with bifacialVf
 
-# In[8]:
+# In[7]:
 
 
 TMYtoread=os.path.join(InputFilesFolder,'TMY3_00a.csv')
@@ -101,7 +102,7 @@ bifacialvf.simulate(myTMY3, meta, writefiletitle=writefiletitle,
 
 # ### Load and Caculate performance with PVLIB
 
-# In[10]:
+# In[8]:
 
 
 data, meta = bifacialvf.loadVFresults(writefiletitle)
@@ -109,7 +110,7 @@ data, meta = bifacialvf.loadVFresults(writefiletitle)
 
 # ### Retrieve module data from CEC database
 
-# In[17]:
+# In[9]:
 
 
 db = pvlib.pvsystem.retrieve_sam(name='CECMod').T
@@ -125,7 +126,7 @@ if len(mymod1) != 1:
 
 # ### Calculate SAPM Cell Temperature
 
-# In[21]:
+# In[10]:
 
 
 from pvlib.temperature import TEMPERATURE_MODEL_PARAMETERS
@@ -135,7 +136,7 @@ tpmMonoBS = ( TEMPERATURE_MODEL_PARAMETERS['sapm']['open_rack_glass_glass']) # t
 
 # Note: need to calcualte POA average and consider bifaciality factor depending on case modeled. Using first value of front POA for this example
 
-# In[23]:
+# In[11]:
 
 
 bifacialityfactor = 0.65
@@ -145,7 +146,7 @@ data['mono_celltemp'] = pvlib.temperature.sapm_cell(data.No_1_RowFrontGTI, data.
 
 # ### Calculate Performance with PVLib
 
-# In[25]:
+# In[12]:
 
 
 def calculatePerformance(effective_irradiance, temp_cell, CECMod):
@@ -189,7 +190,7 @@ def calculatePerformance(effective_irradiance, temp_cell, CECMod):
     return IVcurve_info['p_mp']
 
 
-# In[26]:
+# In[13]:
 
 
 data['S1_dcP'] = calculatePerformance(data.No_1_RowFrontGTI, data.bifi_celltemp, mymod1)
