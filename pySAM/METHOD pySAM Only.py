@@ -24,15 +24,7 @@
 # In[1]:
 
 
-Resultsfolder = r'TEMP'
-InputFiles = r'InputFiles'
-exampleflag = False
-debugflag = False
-
-
-# In[2]:
-
-
+# PySAM downloaded by either `pip install nrel-pysam` or `conda install -c nrel nrel-pysam`
 import PySAM.Pvsamv1 as pv
 import PySAM
 import xlsxwriter
@@ -44,7 +36,18 @@ import requests
 import numpy as np
 
 
+# In[2]:
+
+
+Resultsfolder = r'TEMP'
+path_parent = os.path.dirname(os.getcwd())
+InputFiles = os.path.join(path_parent,'InputFiles')
+exampleflag = False
+debugflag = False
+
+
 # In[3]:
+
 
 
 PySAM.__version__
@@ -54,11 +57,11 @@ PySAM.__version__
 
 # ## Create a default pySAM PV simulation </a></li>
 
-# In[7]:
+# In[4]:
 
 
 sam1 = pv.default("FlatPlatePVCommercial")
-solar_resource_file = os.path.join(testfolder,'BEST_SAM_60_Comb_00a.csv')
+solar_resource_file = os.path.join(InputFiles,'BEST_SAM_60_Comb_00a.csv')
 sam1.SolarResource.solar_resource_file = solar_resource_file
 
 
@@ -69,7 +72,7 @@ sam1.SolarResource.solar_resource_file = solar_resource_file
 # !!! UPDATE THIS TO USE PVLIB DONWLOAD
 # 
 
-# In[10]:
+# In[5]:
 
 
 #url = 'https://raw.githubusercontent.com/NREL/SAM/develop/deploy/libraries/CEC%20Modules.csv'
@@ -84,7 +87,7 @@ if len(myinv) != 1:
     print("Error selecting inverter, check filtering")
 
 
-# In[11]:
+# In[6]:
 
 
 # assigning our simulation params
@@ -113,7 +116,7 @@ use_wf_albedo = 1
 subarray1_tilt = 0 
 
 
-# In[13]:
+# In[7]:
 
 
 inv_snl_c0 = float(myinv['C0'])
@@ -135,7 +138,7 @@ inverter_count = 10
 inv_tdc_cec_db = [[1, 52.79999923706055, -0.020999999716877937]] # Temperature derate curves for CEC Database [(Vdc, C, %/C)]
 
 
-# In[14]:
+# In[8]:
 
 
 newval = { 'SolarResource': {
@@ -177,13 +180,13 @@ newval = { 'SolarResource': {
           
 
 
-# In[15]:
+# In[9]:
 
 
 sam1.assign(newval)
 
 
-# In[16]:
+# In[10]:
 
 
 #url = 'https://raw.githubusercontent.com/NREL/SAM/develop/deploy/libraries/CEC%20Modules.csv'
@@ -197,14 +200,14 @@ df = pd.read_csv(url, index_col=0)
 # ## Loop for each module type, for yearly data at hourly resolution 
 # 
 
-# In[17]:
+# In[11]:
 
 
 solar_resource_file = os.path.join(InputFiles,'BEST_SAM_60_Comb_00a.csv')
 weatherfile = pd.read_csv(solar_resource_file, skiprows=2)
 
 
-# In[18]:
+# In[12]:
 
 
 #timestamps = pd.to_datetime(weatherfile[['Year','Month','Day','Hour']])
