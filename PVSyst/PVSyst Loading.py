@@ -14,7 +14,7 @@ import numpy as np
 
 
 def definePVsystOutputDecoder():
-    
+
     PVsystOutputDecoder = {'NormFac' : 'Normalised performance index (ref. to STC)',
     'Yr' : 'Reference Incident Energy in coll. Plane',
     'Ya' : 'Normalized Array Production',
@@ -26,7 +26,7 @@ def definePVsystOutputDecoder():
     'PR' : 'Performance Ratio',
     'Effic' : 'Efficiencies',
     'EffArrR' : 'Effic. Eout array / rough area',
-    'EffArrC' : 'Effic. Eout arra / cells area',
+    'EffArrC' : 'Effic. Eout array / cells area',
     'EffSysR' : 'Effic. Eout system / rough area',
     'EffSysC' : 'Effic Eout system / cells area',
     'EffInvB' : 'Inverter effic., threshold loss included',
@@ -151,29 +151,29 @@ def readPVSystOutputFile(filename):
     Reads a PVSYSt hourly output file, puts it in dataframe format and returns a 
     column header decoder to understand all the variables that name the columns.
     Also returns any metadata included in the file.
-    
+
     Input
     -----
     filename       PVsyst hourly simulation output file(.csv)
-    
+
     Returns
     -------
     df             Dataframe with the hourly simulation results. Columns are named for each variable.
     columnheaders  Decoder for the column header names, which are variables. This ties the available columns with the description of that variable.
     metdata        metdata included in the pvsyst file.
-    
+
     '''
-    
+
     import pandas as pd
     import csv
-    
+
     f = open(filename)
-    
+
     # Save metdata from file
     metdata=[]
     for i in range(10):  # skip the first 13 lines that are useless for the columns definition
         metdata.append(f.readline())  # use the resulting string for metadata extraction
-      
+
     headers = f.readline().split(";")
     headers[-1] = headers[-1].strip()
 
@@ -181,16 +181,16 @@ def readPVSystOutputFile(filename):
     units[-1] = units[-1].strip()
 
     PVsystOutputDecoder = definePVsystOutputDecoder()
-    
+
     # Creating a dictionary for headers, units and their definition
     columnheaders = {}    
     for i in range (1, len(headers)):
         columnheaders[headers[i]] = {'Definition' : PVsystOutputDecoder[headers[i]],
                      'Units': units[i]}
-    
+
     df = pd.read_csv(f, sep=";", names=headers)   
     df.index = pd.to_datetime(df['date'], dayfirst=True)
-    
+
     return df, columnheaders, metdata
 
 
