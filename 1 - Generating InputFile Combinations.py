@@ -15,6 +15,7 @@ debugflag = False
 
 
 import pandas as pd
+print(f'Pandas version: {pd.__version__}')  #pandas needs to be 1.5 to be able to read the pickle file.
 import matplotlib.pyplot as plt
 import pvlib
 import numpy as np
@@ -35,7 +36,11 @@ plt.rcParams['figure.figsize'] = (12, 4)
 # In[4]:
 
 
-data = pd.read_pickle(os.path.join(fielddataFolder,'DATA_Release.pickle'))
+try:
+    data = pd.read_pickle(os.path.join(fielddataFolder,'DATA_Release.pickle'))
+except AttributeError:
+    raise Exception('Error: pandas needs to be >= 1.5.0 to read this pickle file')
+        
 print("Clean pickle loaded for Plotting Production Data, # datapoints: ", data.__len__())
 print("Spanning from", data.index[0], " to ", data.index[-1])
 
@@ -46,7 +51,7 @@ print("Spanning from", data.index[0], " to ", data.index[-1])
 data.keys()
 
 
-# In[113]:
+# In[6]:
 
 
 def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=None, DNI=None, GHI=None, 
@@ -85,30 +90,30 @@ def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=N
     
         savedata['Minute'] = timestamps.minute
 
-    windspeed = list(windspeed)
-    temp_amb = list(temp_amb)
-    savedata['Wspd'] = windspeed
-    savedata['Tdry'] = temp_amb
+    savedata['Wspd'] = list(windspeed)
+    savedata['Tdry'] = list(temp_amb)
     
     if DHI is not None:
-        DHI = list(DHI)
-        savedata['DHI'] = DHI
+        savedata['DHI'] = list(DHI)
     
     if DNI is not None:
-        DNI = list(DNI)
-        savedata['DNI'] = DNI
+        savedata['DNI'] = list(DNI)
                             
     if GHI is not None:
-        GHI = list(GHI)
-        savedata['GHI'] = GHI
+        savedata['GHI'] = list(GHI)
     
     if POA is not None:
-        POA = list(POA)
-        savedata['POA'] = POA
+        savedata['POA'] = list(POA)
         
     if Albedo is not None:
-        Albedo = list(Albedo)
-        savedata['Albedo'] = Albedo
+        if type(Albedo) == pd.Series:
+            #Albedo.loc[(~np.isfinite(Albedo)) & Albedo.notnull()] = np.nan
+            
+            Albedo = Albedo.fillna(0.99).clip(lower=0.01,upper=0.99)
+        savedata['Albedo'] = list(Albedo)
+        
+    # reorder csv
+    savedata = savedata.sort_values(by=['Month','Day','Hour'])
       
     with open(savefile, 'w', newline='') as ict:
         # Write the header lines, including the index variable for
@@ -118,7 +123,7 @@ def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=N
             ict.write(line)
 
         savedata.to_csv(ict, index=False)
-
+   
         
 def save_TMY3(datecol, timecol, windspeed, temp_amb, Albedo, POA=None, DHI=None, DNI=None, GHI=None, 
                         savefile='TMY3.csv', trackerdata=None):
@@ -176,7 +181,7 @@ filterdates = (data.index >= '2021-06-01')  & (data.index < '2022-06-01')
 data2 = data[filterdates].copy()
 
 
-# In[118]:
+# In[8]:
 
 
 data2 = data[filterdates].resample('60T', label='left', closed='left').mean().copy()
@@ -189,57 +194,57 @@ data3 = data[filterdates].resample('60T', label='right', closed='right').mean().
 data2.keys()
 
 
-# In[10]:
+# In[12]:
 
 
 # 00a - Baseline
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
-                    Albedo = data2.sunkitty_GRI_CM22, 
+                    Albedo = data2.sunkitty_GRI_CM22/data2.SRRL_GHI, 
                     DHI = data2.SRRL_DHI, DNI = data2.SRRL_DNI, GHI = data2.SRRL_GHI,
-                    savefile = 'BEST_SAM_60_Comb_00a.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_00a.csv'), includeminute = False)
 
 
-# In[11]:
+# In[13]:
 
 
 # 00b - Baseline sunkitty_albedo_IMT
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_albedo_IMT, 
                     DHI = data2.SRRL_DHI, DNI = data2.SRRL_DNI, GHI = data2.SRRL_GHI,
-                    savefile = 'BEST_SAM_60_Comb_00b.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_00b.csv'), includeminute = False)
 
 
-# In[12]:
+# In[14]:
 
 
 # 00c - Baseline sunkitty_albedo_AP
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_albedo_AP, 
                     DHI = data2.SRRL_DHI, DNI = data2.SRRL_DNI, GHI = data2.SRRL_GHI,
-                    savefile = 'BEST_SAM_60_Comb_00c.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_00c.csv'), includeminute = False)
 
 
-# In[13]:
+# In[15]:
 
 
 # 00d - Baseline SRRL_albedo
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.SRRL_albedo, 
                     DHI = data2.SRRL_DHI, DNI = data2.SRRL_DNI, GHI = data2.SRRL_GHI,
-                    savefile = 'BEST_SAM_60_Comb_00d.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_00d.csv'), includeminute = False)
 
 
-# In[ ]:
+# In[17]:
 
 
 # 00e - Baseline Albedo = 0.22
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = 0.22,
                     DHI = data2.SRRL_DHI, DNI = data2.SRRL_DNI, GHI = data2.SRRL_GHI,
-                    savefile = 'BEST_SAM_60_Comb_00e.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_00e.csv'), includeminute = False)
 
 
-# In[ ]:
+# In[27]:
 
 
 ## FINISH
@@ -247,17 +252,19 @@ saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, 
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.SRRL_albedo, 
                     DHI = data2.SRRL_DHI, DNI = data2.SRRL_DNI, GHI = data2.SRRL_GHI,
-                    savefile = 'BEST_SAM_60_Comb_00f.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_00f.csv'), includeminute = False)
 
 
-# In[16]:
+# In[59]:
 
 
+"""
 foo2 = data2['SRRL_albedo']
 foo2 = foo2.resample('1M').mean()
 foo2 = foo2.resample('60T', label='left', closed='left').fillna('ffill')
 foo['index'] = pd.to_datetime(data2.index)
 foo['SRRL_albedo'] = (data2.groupby(foo['index'].dt.to_period('M'))['SRRL_albedo'].transform('mean'))
+"""
 
 
 # In[ ]:
@@ -266,7 +273,7 @@ foo['SRRL_albedo'] = (data2.groupby(foo['index'].dt.to_period('M'))['SRRL_albedo
 
 
 
-# In[ ]:
+# In[29]:
 
 
 ## ??? Interest NSRDB Satellite data ---> 
@@ -274,238 +281,238 @@ foo['SRRL_albedo'] = (data2.groupby(foo['index'].dt.to_period('M'))['SRRL_albedo
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.SRRL_albedo, 
                     DHI = data2.SRRL_DHI, DNI = data2.SRRL_DNI, GHI = data2.SRRL_GHI,
-                    savefile = 'BEST_SAM_60_Comb_00g.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_00g.csv'), includeminute = False)
 
 
 # ### 0 POA Front:
 
-# In[18]:
+# In[30]:
 
 
 # 01a - POA row5Gfront
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row5Gfront,
-                    savefile = 'BEST_SAM_60_Comb_01a.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_01a.csv'), includeminute = False)
 
 
-# In[19]:
+# In[31]:
 
 
 # 01b - POA row2Gfront
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row2Gfront,
-                    savefile = 'BEST_SAM_60_Comb_01b.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_01b.csv'), includeminute = False)
 
 
-# In[20]:
+# In[32]:
 
 
 # 01c - POA row3Gfront
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row3Gfront,
-                    savefile = 'BEST_SAM_60_Comb_01c.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_01c.csv'), includeminute = False)
 
 
-# In[21]:
+# In[33]:
 
 
 # 01d - POA row7Gfront
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row7Gfront,
-                    savefile = 'BEST_SAM_60_Comb_01d.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_01d.csv'), includeminute = False)
 
 
-# In[22]:
+# In[34]:
 
 
 # 01e - POA row9Gfront
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row9Gfront,
-                    savefile = 'BEST_SAM_60_Comb_01e.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_01e.csv'), includeminute = False)
 
 
-# In[23]:
+# In[35]:
 
 
 # 01f - POA row3Gfront_CM11
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row3Gfront_CM11,
-                    savefile = 'BEST_SAM_60_Comb_01f.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_01f.csv'), includeminute = False)
 
 
-# In[24]:
+# In[36]:
 
 
 # 01g - POA row3Gfront_Licor
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row3Gfront_Licor,
-                    savefile = 'BEST_SAM_60_Comb_01f.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_01f.csv'), includeminute = False)
 
 
 # ### POA Front + Rear
 
-# In[25]:
+# In[37]:
 
 
 # 02a - POA row5Gfront + data2.Grear,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.Grear,
-                    savefile = 'BEST_SAM_60_Comb_02a.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_02a.csv'), includeminute = False)
 
 
-# In[26]:
+# In[38]:
 
 
 # 02b - POA row2Gfront + data2.Grear,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row2Gfront + data2.Grear,
-                    savefile = 'BEST_SAM_60_Comb_02b.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_02b.csv'), includeminute = False)
 
 
-# In[27]:
+# In[39]:
 
 
 # 02c - POA row3Gfront + data2.Grear,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row3Gfront + data2.Grear,
-                    savefile = 'BEST_SAM_60_Comb_02c.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_02c.csv'), includeminute = False)
 
 
-# In[28]:
+# In[40]:
 
 
 # 02d - POA row7Gfront + data2.Grear,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row7Gfront + data2.Grear,
-                    savefile = 'BEST_SAM_60_Comb_02d.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_02d.csv'), includeminute = False)
 
 
-# In[29]:
+# In[41]:
 
 
 # 02e - POA row9Gfront + data2.Grear,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row9Gfront + data2.Grear,
-                    savefile = 'BEST_SAM_60_Comb_02e.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_02e.csv'), includeminute = False)
 
 
-# In[30]:
+# In[42]:
 
 
 # 02f - POA row3Gfront_CM11 + data2.row3Grear_CM11,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row3Gfront_CM11 + data2.row3Grear_CM11,
-                    savefile = 'BEST_SAM_60_Comb_02f.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_02f.csv'), includeminute = False)
 
 
-# In[31]:
+# In[43]:
 
 
 # 02g - POA row3Gfront_Licor + data2.row3Grear_Licor,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.row3Gfront_Licor + data2.row3Grear_Licor,
-                    savefile = 'BEST_SAM_60_Comb_02f.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_02f.csv'), includeminute = False)
 
 
 # ### 3 POA Front + Grear single locations
 
-# In[32]:
+# In[44]:
 
 
 # 03a - POA Gfront + data2.row3Grear_IMT_West,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.row3Grear_IMT_West,
-                    savefile = 'BEST_SAM_60_Comb_03a.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_03a.csv'), includeminute = False)
 
 
-# In[33]:
+# In[45]:
 
 
 # 03b - POA Gfront + data2.row3Grear_IMT_CenterWest,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.row3Grear_IMT_CenterWest,
-                    savefile = 'BEST_SAM_60_Comb_03b.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_03b.csv'), includeminute = False)
 
 
-# In[34]:
+# In[46]:
 
 
 # 03c - POA Gfront + data2.row3Grear_IMT_CenterEast,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.row3Grear_IMT_CenterEast,
-                    savefile = 'BEST_SAM_60_Comb_03c.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_03c.csv'), includeminute = False)
 
 
-# In[35]:
+# In[47]:
 
 
 # 03d - POA Gfront + data2.row3Grear_IMT_East,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.row3Grear_IMT_East,
-                    savefile = 'BEST_SAM_60_Comb_03d.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_03d.csv'), includeminute = False)
 
 
-# In[36]:
+# In[48]:
 
 
 # 03e - POA Gfront + data2.row5Grear,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.row5Grear,
-                    savefile = 'BEST_SAM_60_Comb_03e.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_03e.csv'), includeminute = False)
 
 
-# In[37]:
+# In[49]:
 
 
 # 03f - POA Gfront + data2.row7Grear_IMT_CenterEast,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.row7Grear_IMT_CenterEast,
-                    savefile = 'BEST_SAM_60_Comb_03f.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_03f.csv'), includeminute = False)
 
 
-# In[38]:
+# In[50]:
 
 
 # 03g - POA Gfront + data2.row7Grear_IMT_East,
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.row7Grear_IMT_East,
-                    savefile = 'BEST_SAM_60_Comb_03g.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_03g.csv'), includeminute = False)
 
 
-# In[39]:
+# In[51]:
 
 
 # 03h - POA Gfront + data2.row9Grear
 saveSAM_WeatherFile(timestamps = data2.index, windspeed = data2.row7wind_speed, temp_amb = data2.temp_ambient_FieldAverage, 
                     Albedo = data2.sunkitty_GRI_CM22, 
                     POA = data2.Gfront + data2.row9Grear,
-                    savefile = 'BEST_SAM_60_Comb_03h.csv', includeminute = False)
+                    savefile = os.path.join(InputFilesFolder,'BEST_SAM_60_Comb_03h.csv'), includeminute = False)
 
 
 # ## TMY3 FORMAT
 
-# In[40]:
+# In[52]:
 
 
 real_tmy=r'Other\724010TYA.CSV'
@@ -513,7 +520,7 @@ real_tmy = pd.read_csv(real_tmy, skiprows = [0])
 real_tmy = real_tmy.reset_index()
 
 
-# In[137]:
+# In[53]:
 
 
 data3 = data3[1:]  # removing the first 0 index
@@ -532,13 +539,13 @@ dates = pd.DatetimeIndex(data3['index'])
 #data3['Date (MM/DD/YYYY)'] = dates.strftime("%m/%d/%Y")
 
 
-# In[138]:
+# In[54]:
 
 
 data3['Date (MM/DD/YYYY)'] = dates.strftime("%m/%d/%Y")
 
 
-# In[125]:
+# In[55]:
 
 
 data3['month'] = dates.month
@@ -547,19 +554,19 @@ data3['day'] = dates.day
 data3['day'] = data3['day'].apply(str)
 
 
-# In[135]:
+# In[56]:
 
 
 data3['Date (MM/DD/YYYY)']
 
 
-# In[136]:
+# In[57]:
 
 
 dates.strftime("%m/%d/%Y")
 
 
-# In[121]:
+# In[58]:
 
 
 # 00a - Baseline
