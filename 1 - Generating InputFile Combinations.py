@@ -51,7 +51,7 @@ print("Spanning from", data.index[0], " to ", data.index[-1])
 data.keys()
 
 
-# In[6]:
+# In[65]:
 
 
 def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=None, DNI=None, GHI=None, 
@@ -90,20 +90,20 @@ def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=N
     
         savedata['Minute'] = timestamps.minute
 
-    savedata['Wspd'] = list(windspeed)
-    savedata['Tdry'] = list(temp_amb)
+    savedata['Wspd'] = list(windspeed.fillna(0))
+    savedata['Tdry'] = list(temp_amb.fillna(20))
     
     if DHI is not None:
-        savedata['DHI'] = list(DHI)
+        savedata['DHI'] = list(DHI.fillna(0))
     
     if DNI is not None:
-        savedata['DNI'] = list(DNI)
+        savedata['DNI'] = list(DNI.fillna(0))
                             
     if GHI is not None:
-        savedata['GHI'] = list(GHI)
+        savedata['GHI'] = list(GHI.fillna(0))
     
     if POA is not None:
-        savedata['POA'] = list(POA)
+        savedata['POA'] = list(POA.fillna(0))
         
     if Albedo is not None:
         if type(Albedo) == pd.Series:
@@ -194,7 +194,7 @@ data3 = data[filterdates].resample('60T', label='right', closed='right').mean().
 data2.keys()
 
 
-# In[12]:
+# In[66]:
 
 
 # 00a - Baseline
