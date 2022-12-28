@@ -101,7 +101,7 @@ import pandas as pd
 # 9-Bifi: Sunpreme Inc. SNPM-HxB-400
 
 
-# In[13]:
+# In[12]:
 
 
 # Row 2
@@ -114,7 +114,7 @@ system_capacity = 73.982               # VERY important value, only obtained by 
 system_capacity = 80.089
 
 
-# In[14]:
+# In[13]:
 
 
 dfAll = pd.DataFrame()
@@ -181,14 +181,16 @@ for ii in range(0, 1): # loop here over all the weather files or sims.
     dfAll = pd.concat([dfAll, res], axis=1)
 
 
-# In[15]:
+# In[14]:
 
 
 dfAll
 
 
-# In[ ]:
-
-
-
-
+# # Variables to explore SAM models
+# 
+# * sky_model = 0 for Isotropic, 1 for HDKR, 2 for Perez
+# * irrad_mod = 0 DNI + GHI, 1 DNI + GHI, 2 GHI + DHI, 3 POA Ref cell, 4 POA pyr
+# 
+# use_wf_albedo
+# use_spatial_albedos
