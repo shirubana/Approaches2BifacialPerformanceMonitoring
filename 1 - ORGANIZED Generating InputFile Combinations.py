@@ -422,7 +422,7 @@ for ii in range(0, len(orga)):
 
         elif POABOA == 2:
         # Front + Rear IRradiances 
-            foaPOA = data[POAvarname] + data[BOAvarname]
+            fooPOA = data[POAvarname] + data[BOAvarname]
         
         saveSAM_WeatherFile(timestamps = data.index, 
                             windspeed = data[windvarname], 
@@ -442,10 +442,4 @@ for ii in range(0, len(orga)):
                             DHI = data.SRRL_DHI, DNI = data.SRRL_DNI, GHI = data.SRRL_GHI,
                             savefile = savefilevar, 
                             includeminute = False)
-
-
-# In[ ]:
-
-
-
 
