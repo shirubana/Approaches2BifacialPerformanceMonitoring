@@ -210,6 +210,127 @@ weatherfile = pd.read_csv(solar_resource_file, skiprows=2)
 # In[12]:
 
 
+# 2-Bifi: Prism 
+modfilter = df.index.str.startswith('Prism') & df.index.str.contains('457BSTC')
+system_capacity =  72.04280090332031   # VERY important value, only obtained by GUI.
+cec_is_bifacial = 1
+cec_bifaciality = 0.694 
+
+
+# In[13]:
+
+
+#solar_resource_file = os.path.join(InputFiles,solarresource)
+sam1.SolarResource.solar_resource_file = solar_resource_file
+
+mymod = df[modfilter]
+
+cec_a_ref = float(mymod.a_ref[0])
+cec_adjust = float(mymod.Adjust[0]) 
+cec_alpha_sc = float(mymod.alpha_sc[0]) 
+cec_area = float(mymod.A_c[0]) 
+
+cec_beta_oc = float(mymod.beta_oc[0]) 
+cec_gamma_r = float(mymod.gamma_r[0]) 
+cec_i_l_ref = float(mymod.I_L_ref[0])
+cec_i_mp_ref = float(mymod.I_mp_ref[0]) 
+cec_i_o_ref = float(mymod.I_o_ref[0]) 
+cec_i_sc_ref = float(mymod.I_sc_ref[0]) 
+#cec_is_bifacial = int(mymod.Bifacial[0]) # Assigning manually from the if statements above
+if np.isnan(float(mymod.Length[0])): # Adjusting size of module to standard size if not in catalogue
+    cec_module_length = 2.0
+else:
+    cec_module_length = float(mymod.Length[0]) 
+if np.isnan(float(mymod.Width[0])):
+    cec_module_width = 1.0
+else: 
+    cec_module_width = float(mymod.Width[0]) 
+module_aspect_ratio = cec_module_length/cec_module_width    # Adjusting module aspect ratio
+
+cec_n_s = float(mymod.N_s[0]) 
+cec_r_s = float(mymod.R_s[0]) 
+cec_r_sh_ref = float(mymod.R_sh_ref[0])
+cec_t_noct = float(mymod.T_NOCT[0]) 
+cec_v_mp_ref = float(mymod.V_mp_ref[0]) 
+cec_v_oc_ref = float(mymod.V_oc_ref[0]) 
+
+subarray1_gcr = cec_module_length/pitch        # Adjusting the gcr slightly for the module length.
+
+
+# In[14]:
+
+
+newval = {'SystemDesign':{'system_capacity':system_capacity, # VERY important value, only obtained by GUI.
+                         'subarray1_gcr':subarray1_gcr}, 
+          'Layout':{'module_aspect_ratio':module_aspect_ratio},
+            'CECPerformanceModelWithModuleDatabase': {
+                'cec_a_ref': cec_a_ref,
+                'cec_adjust': cec_adjust,
+                'cec_alpha_sc': cec_alpha_sc,
+                'cec_area': cec_area,
+                'cec_beta_oc': cec_beta_oc,
+                'cec_gamma_r': cec_gamma_r,
+                'cec_i_l_ref': cec_i_l_ref,
+                'cec_i_mp_ref': cec_i_mp_ref,
+                'cec_i_o_ref': cec_i_o_ref,
+                'cec_i_sc_ref': cec_i_sc_ref,
+                'cec_is_bifacial': cec_is_bifacial,
+                'cec_module_length': cec_module_length,
+                'cec_module_width': cec_module_width,
+                'cec_n_s': cec_n_s,
+                'cec_r_s': cec_r_s,
+                'cec_r_sh_ref': cec_r_sh_ref,
+                'cec_t_noct': cec_t_noct,
+                'cec_v_mp_ref': cec_v_mp_ref,
+                'cec_v_oc_ref': cec_v_oc_ref,
+                'cec_bifacial_ground_clearance_height': cec_bifacial_ground_clearance_height,
+                'cec_bifacial_transmission_factor': cec_bifacial_transmission_factor,
+                'cec_bifaciality': cec_bifaciality
+            }
+         }
+
+sam1.assign(newval)
+
+
+# In[15]:
+
+
+sam1.execute()
+
+
+# In[ ]:
+
+
+results = sam1.Outputs.export()
+
+
+power = list(results['subarray1_dc_gross'])
+celltemp = list(results['subarray1_celltemp'])
+
+# Saving select columns of results as needed
+if ii == 0:
+    dni = list(results['dn'])
+    dhi = list(results['df'])
+    alb = list(results['alb'])
+    rear = list(results['subarray1_poa_rear'])
+    front = list(results['subarray1_poa_front'])
+    poa= list(results['subarray1_poa_eff'])
+    res = pd.DataFrame(list(zip(power, celltemp, dni, dhi, alb, rear, front, poa)),
+               columns =['row'+str(ii)+'_DCP', 'row'+str(ii)+'_Celltemp', 'DNI','DHI','alb','Grear','Gfront','POA'])
+else:
+    res = pd.DataFrame(list(zip(power, celltemp)),
+               columns =['row'+str(ii)+'_DCP', 'row'+str(ii)+'_Celltemp'])
+
+res['row'+str(ii)+'_DCP']= res['row'+str(ii)+'_DCP']/system_capacity # normalizing by the system_capacity
+res = res[0:8760]
+#res.index = timestamps
+
+dfAll = pd.concat([dfAll, res], axis=1)
+
+
+# In[ ]:
+
+
 #timestamps = pd.to_datetime(weatherfile[['Year','Month','Day','Hour']])
 
 dfAll = pd.DataFrame()
