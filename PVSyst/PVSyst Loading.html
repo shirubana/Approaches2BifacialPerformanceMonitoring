@@ -14609,7 +14609,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">definePVsystOutputDecoder</span><span class="p">():</span>
-    
+
     <span class="n">PVsystOutputDecoder</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;NormFac&#39;</span> <span class="p">:</span> <span class="s1">&#39;Normalised performance index (ref. to STC)&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Yr&#39;</span> <span class="p">:</span> <span class="s1">&#39;Reference Incident Energy in coll. Plane&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Ya&#39;</span> <span class="p">:</span> <span class="s1">&#39;Normalized Array Production&#39;</span><span class="p">,</span>
@@ -14621,7 +14621,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     <span class="s1">&#39;PR&#39;</span> <span class="p">:</span> <span class="s1">&#39;Performance Ratio&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Effic&#39;</span> <span class="p">:</span> <span class="s1">&#39;Efficiencies&#39;</span><span class="p">,</span>
     <span class="s1">&#39;EffArrR&#39;</span> <span class="p">:</span> <span class="s1">&#39;Effic. Eout array / rough area&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;EffArrC&#39;</span> <span class="p">:</span> <span class="s1">&#39;Effic. Eout arra / cells area&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;EffArrC&#39;</span> <span class="p">:</span> <span class="s1">&#39;Effic. Eout array / cells area&#39;</span><span class="p">,</span>
     <span class="s1">&#39;EffSysR&#39;</span> <span class="p">:</span> <span class="s1">&#39;Effic. Eout system / rough area&#39;</span><span class="p">,</span>
     <span class="s1">&#39;EffSysC&#39;</span> <span class="p">:</span> <span class="s1">&#39;Effic Eout system / cells area&#39;</span><span class="p">,</span>
     <span class="s1">&#39;EffInvB&#39;</span> <span class="p">:</span> <span class="s1">&#39;Inverter effic., threshold loss included&#39;</span><span class="p">,</span>
@@ -14746,29 +14746,29 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="sd">    Reads a PVSYSt hourly output file, puts it in dataframe format and returns a </span>
 <span class="sd">    column header decoder to understand all the variables that name the columns.</span>
 <span class="sd">    Also returns any metadata included in the file.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Input</span>
 <span class="sd">    -----</span>
 <span class="sd">    filename       PVsyst hourly simulation output file(.csv)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    df             Dataframe with the hourly simulation results. Columns are named for each variable.</span>
 <span class="sd">    columnheaders  Decoder for the column header names, which are variables. This ties the available columns with the description of that variable.</span>
 <span class="sd">    metdata        metdata included in the pvsyst file.</span>
-<span class="sd">    </span>
+
 <span class="sd">    &#39;&#39;&#39;</span>
-    
+
     <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
     <span class="kn">import</span> <span class="nn">csv</span>
-    
+
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-    
+
     <span class="c1"># Save metdata from file</span>
     <span class="n">metdata</span><span class="o">=</span><span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>  <span class="c1"># skip the first 13 lines that are useless for the columns definition</span>
         <span class="n">metdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>  <span class="c1"># use the resulting string for metadata extraction</span>
-      
+
     <span class="n">headers</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
     <span class="n">headers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">headers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
@@ -14776,16 +14776,16 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     <span class="n">units</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="n">PVsystOutputDecoder</span> <span class="o">=</span> <span class="n">definePVsystOutputDecoder</span><span class="p">()</span>
-    
+
     <span class="c1"># Creating a dictionary for headers, units and their definition</span>
     <span class="n">columnheaders</span> <span class="o">=</span> <span class="p">{}</span>    
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">)):</span>
         <span class="n">columnheaders</span><span class="p">[</span><span class="n">headers</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Definition&#39;</span> <span class="p">:</span> <span class="n">PVsystOutputDecoder</span><span class="p">[</span><span class="n">headers</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span>
                      <span class="s1">&#39;Units&#39;</span><span class="p">:</span> <span class="n">units</span><span class="p">[</span><span class="n">i</span><span class="p">]}</span>
-    
+
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>   
     <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">dayfirst</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">columnheaders</span><span class="p">,</span> <span class="n">metdata</span>
 </pre></div>
 
