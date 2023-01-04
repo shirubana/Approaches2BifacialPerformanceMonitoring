@@ -4,6 +4,7 @@
 # In[1]:
 
 
+# Written for nrel-pysam 3.0.2
 import PySAM.Pvsamv1 as PV
 import PySAM.Grid as Grid
 import PySAM.Utilityrate5 as UtilityRate
@@ -38,7 +39,7 @@ for count, module in enumerate([pv, grid, ur, so]):
                 continue
             try:
                 module.value(k, v)
-            except AttributeError:
+            except :
                 # there is an error is setting the value for ppa_escalation
                 print(module, k, v)
 
@@ -72,7 +73,7 @@ pv.SolarResource.albedo
 # In[8]:
 
 
-pv.SolarResource.solar_resource_file = r'C:\Users\sayala\Documents\GitHub\Studies\Approaches2BifacialPerformanceMonitoring\InputFiles\BEST_SAM_60_Comb_00a.csv'
+pv.SolarResource.solar_resource_file = r'..\InputFiles\BEST_SAM_60_Comb_00a.csv'
 
 
 # In[9]:
@@ -142,7 +143,7 @@ for ii in range(0, 1): # loop here over all the weather files or sims.
                     print(module, k, v)
 
     # Change Weather File here
-    pv.SolarResource.solar_resource_file = r'C:\Users\sayala\Documents\GitHub\Studies\Approaches2BifacialPerformanceMonitoring\InputFiles\BEST_SAM_60_Comb_00a.csv'
+    pv.SolarResource.solar_resource_file = r'..\InputFiles\BEST_SAM_60_Comb_00a.csv'
                     
     grid.SystemOutput.gen = [0] * 8760  # p_out   # let's set all the values to 0
     pv.execute()
