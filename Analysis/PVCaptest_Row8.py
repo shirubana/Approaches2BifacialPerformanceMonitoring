@@ -114,32 +114,9 @@ sam.load_data(fname=samfile, source='AlsoEnergy')  # the AlsoEnergy flag is need
 sam.review_column_groups()
 
 
-# ## Set up regression details for the run
+# ## Captest subroutines
 
-# In[11]:
-
-
-rownum = 8
-
-sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa=f'poa{rownum}', t_amb='temp-amb-', w_vel='wind--')
-# Load 15-minute field data, 6/1/21 - 5/31/22
-das = pvc.CapData('das')
-das.load_data(fname='Rows2-9_2021-2022_15T.csv', source='AlsoEnergy')  # the AlsoEnergy flag is needed to make this work.
-
-das.data = das.data[(das.data['Gfront_poa'].notna())&(das.data[f'power_dc_inv{rownum}'].notna())&(das.data['row2wind_speed'].notna())] 
-
-das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gfront_poa', t_amb='temp-amb-', w_vel='wind--')
-
-#das.review_column_groups()
-
-
-# In[ ]:
-
-
-
-
-
-# In[12]:
+# In[27]:
 
 
 
@@ -182,162 +159,318 @@ def setupDAS(das0, date, poa):
     #das.scatter_hv(timeseries=True)
     return das
 
-
-# In[13]:
-
-
-# Divide year into n=12 increments for sequential cap test
-#rc_out = pd.DataFrame(columns=['poa','t_amb','w_vel'])
-sam_list = pd.DataFrame()
-l = das.data.index.__len__()
-n=12
-index = np.linspace(l/(2*n),l*(2*n-1)/(2*n), n).round()
-datelist = [das.data.index[int(i)] for i in index]
-
-sam_df = pd.DataFrame([[setupSAM(sam,k)] for k in datelist], index=[k for k in datelist], columns = ['SAM'])
-
-
-# In[14]:
-
+def saveFilter(df, samfile, rownum):
+    # df: output dataframe with compiled SAM and DAS columns
+    # save filtering details for each run
+    filter_out = pd.DataFrame()
+    for (index,row) in df.iterrows():
+        temp = pvc.get_summary(row.DAS, row.SAM)
+        #print(temp.columns)
+        #print(temp.index)
+        #print(temp)
+        #newindex = pd.MultiIndex.from_tuples(date,temp.index)
+        temp['date'] = row.date.strftime('%Y-%m-%d')
+        temp.set_index('date', append=True, inplace=True)
+        filter_out = pd.concat([filter_out, temp])
+    filter_out.to_csv(os.path.join('results',f'filter_out_{samfile}_row{rownum}'))
+    print(filter_out.to_markdown())
 
 
-#print([a for a in A.SAM])
-rc_out = pd.concat([a.rc for a in sam_df.SAM])
-print(rc_out)
+# In[28]:
 
 
-# In[15]:
+def runCaptest(sam, das, samfile, rownum):
 
+    # Divide year into n=12 increments for sequential cap test
+    #rc_out = pd.DataFrame(columns=['poa','t_amb','w_vel'])
+    sam_list = pd.DataFrame()
+    l = das.data.index.__len__()
+    n=12
+    index = np.linspace(l/(2*n),l*(2*n-1)/(2*n), n).round()
+    datelist = [das.data.index[int(i)] for i in index]
 
-
-
-
-# In[16]:
-
-
-das_df = pd.DataFrame([[setupDAS(das,index,row.poa)] for (index,row) in rc_out.iterrows()], 
+    sam_df = pd.DataFrame([[setupSAM(sam,k)] for k in datelist], index=[k for k in datelist], columns = ['SAM'])
+    
+    rc_out = pd.concat([a.rc for a in sam_df.SAM])
+    #print(rc_out)
+    
+    das_df = pd.DataFrame([[setupDAS(das,index,row.poa)] for (index,row) in rc_out.iterrows()], 
                       index=[index for (index,row) in rc_out.iterrows()], columns = ['DAS'])
 
+    df = pd.concat([sam_df, das_df, rc_out], axis=1)
+    df['date'] = df.index
+    #print(df)
+    
+    saveFilter(df, samfile, rownum)
+    
+    # Save regression comparison for each timepoint
+    results_SAM = pd.DataFrame(pd.concat([row.SAM.regression_results.predict(row.SAM.rc) for (index,row) in df.iterrows()]),
+                              columns=['SAM_test'])
+    results_DAS = pd.DataFrame(pd.concat([row.DAS.regression_results.predict(row.SAM.rc) for (index,row) in df.iterrows()]),
+                              columns=['DAS_test'])
 
-# In[17]:
-
-
-df = pd.concat([sam_df, das_df, rc_out], axis=1)
-df['date'] = df.index
-print(df)
-
-
-# In[18]:
-
-
-# save filtering details for each run
-filter_out = pd.DataFrame()
-for (index,row) in df.iterrows():
-    temp = pvc.get_summary(row.DAS, row.SAM)
-    #print(temp.columns)
-    #print(temp.index)
-    #print(temp)
-    #newindex = pd.MultiIndex.from_tuples(date,temp.index)
-    temp['date'] = row.date.strftime('%Y-%m-%d')
-    temp.set_index('date', append=True, inplace=True)
-    filter_out = pd.concat([filter_out, temp])
-filter_out.to_csv(os.path.join('results',f'filter_out_{samfile}_row{rownum}'))
-print(filter_out.to_markdown())
+    results_out = pd.concat([results_SAM,results_DAS], axis=1)
+    results_out['ratio'] = results_out.DAS_test / results_out.SAM_test
+    results_out.to_csv(os.path.join('results',f'captest_out_{samfile}_row{rownum}'))
+    
+    return results_out, df
 
 
-# In[19]:
+# In[53]:
 
 
-# pvcaptest has a comparison, but it doesn't save the data.  Need to calculate manually...
-ratio = pvc.captest_results(row.SAM, row.DAS, 6,  '+/- 7')
+def plotAlbedo(results_out, df, rownum, title_text=''):
+    # plot comparison vs albedo. Average albedo for each interval
+    #print(das.data.columns)
+    albedo = das.data.albedo_down / das.data.albedo_up
+    albedo = albedo.fillna(0.99).clip(lower=0.01,upper=0.99)[das.data.albedo_up > 20]
+    #plt.plot(albedo)
+    index = results_out.index
+    grouper = index[index.searchsorted(albedo.index)-1]
+    alb2 = albedo.groupby(grouper).mean()
+
+    fig, ax1 = plt.subplots()
+    ax1.plot(results_out.ratio)
+    ax2 = ax1.twinx()
+    ax2.plot(alb2,'r')
+    ax1.set_ylabel('Cap test ratio', color='b')
+    ax2.set_ylabel('Albedo', color='r')
+    fig.autofmt_xdate()
+    plt.title(f'Row{rownum} {title_text}')
+    plt.savefig(os.path.join('images',f'Row{rownum}{title_text}_Captest.png'))
+    
+def savePowervPOA(df, rownum, text=''):
+    for (index, row) in df.iterrows():
+        plot1 = row.DAS.scatter_hv().relabel('DAS')
+        plot1_test = hv.Points([[ row.poa, results_out.loc[index].DAS_test ]]).opts(color='blue', marker='triangle', size=20)
 
 
-# In[20]:
+        plot2 = row.SAM.scatter_hv().relabel('SAM')
+        plot2_test = hv.Points([[  row.poa, results_out.loc[index].SAM_test ] ]).opts(color='red', marker='square', size=15)
+
+        plot = plot1 * plot2 * plot1_test * plot2_test
+        plot.label=row.date.strftime('%Y-%m-%d')
+        hv.save(plot, os.path.join('images',f'Row{rownum}{text}_PvsPOA_{plot.label}.png'), fmt='png')
+        #plot
 
 
-# Save regression comparison for each timepoint
+# ## Set up regression details for the run of Row 8
 
-results_SAM = pd.DataFrame(pd.concat([row.SAM.regression_results.predict(row.SAM.rc) for (index,row) in df.iterrows()]),
-                          columns=['SAM_test'])
-results_DAS = pd.DataFrame(pd.concat([row.DAS.regression_results.predict(row.SAM.rc) for (index,row) in df.iterrows()]),
-                          columns=['DAS_test'])
-
-results_out = pd.concat([results_SAM,results_DAS], axis=1)
-results_out['ratio'] = results_out.DAS_test / results_out.SAM_test
-results_out.to_csv(os.path.join('results',f'captest_out_{samfile}_row{rownum}'))
+# In[46]:
 
 
-
-# In[ ]:
-
+plotAlbedo(results_out, df, rownum, 'Front POA only')
 
 
+# In[37]:
 
 
-# In[21]:
+rownum = 8
+
+sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa=f'poa{rownum}', t_amb='temp-amb-', w_vel='wind--')
+# Load 15-minute field data, 6/1/21 - 5/31/22
+das = pvc.CapData('das')
+das.load_data(fname='Rows2-9_2021-2022_15T.csv', source='AlsoEnergy')  # the AlsoEnergy flag is needed to make this work.
+
+das.data = das.data[(das.data['Gfront_poa'].notna())&(das.data[f'power_dc_inv{rownum}'].notna())&(das.data['row2wind_speed'].notna())] 
+
+das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gfront_poa', t_amb='temp-amb-', w_vel='wind--')
+
+#das.review_column_groups()
+
+(results_out, df) = runCaptest(sam, das, samfile, rownum)
+
+plotAlbedo(results_out, df, rownum, 'monofacial')
+savePowervPOA(df, rownum)
 
 
-# plot comparison vs albedo. Average albedo for each interval
-print(das.data.columns)
-albedo = das.data.albedo_down / das.data.albedo_up
-albedo = albedo.fillna(0.99).clip(lower=0.01,upper=0.99)[das.data.albedo_up > 20]
-plt.plot(albedo)
-index = results_out.index
-grouper = index[index.searchsorted(albedo.index)-1]
-alb2 = albedo.groupby(grouper).mean()
+# In[57]:
 
 
-# In[26]:
+## look at row 8 but with back-of-module temperature
+rownum = 8
+
+#sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa=f'poa{rownum}', t_amb='temp-amb-', w_vel='wind--')
+sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa=f'poa{rownum}', t_amb='tmod8', w_vel='wind--')
+# Load 15-minute field data, 6/1/21 - 5/31/22
+das = pvc.CapData('das')
+das.load_data(fname='Rows2-9_2021-2022_15T.csv', source='AlsoEnergy')  # the AlsoEnergy flag is needed to make this work.
+
+das.data = das.data[(das.data['Gfront_poa'].notna())&(das.data[f'power_dc_inv{rownum}'].notna())&(das.data['row2wind_speed'].notna())] 
+
+#das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gfront_poa', t_amb='temp-amb-', w_vel='wind--')
+
+das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gfront_poa', t_amb='row8tmod_2', w_vel='wind--')
+
+#das.review_column_groups()
+
+(results_out, df) = runCaptest(sam, das, samfile, rownum)
+
+plotAlbedo(results_out, df, rownum, 'Tmod')
+savePowervPOA(df, rownum, 'Tmod')
 
 
-fig, ax1 = plt.subplots()
-ax1.plot(results_out.ratio)
-ax2 = ax1.twinx()
-ax2.plot(alb2,'r')
-ax1.set_ylabel('Cap test ratio', color='b')
-ax2.set_ylabel('Albedo', color='r')
-fig.autofmt_xdate()
-plt.title(f'Row{rownum}')
+# ## Set up regression details for the run of Row 9 - POA front
+
+# In[38]:
 
 
-# In[23]:
+rownum = 9
+
+sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa=f'poa{rownum}', t_amb='temp-amb-', w_vel='wind--')
+# Load 15-minute field data, 6/1/21 - 5/31/22
+das = pvc.CapData('das')
+das.load_data(fname='Rows2-9_2021-2022_15T.csv', source='AlsoEnergy')  # the AlsoEnergy flag is needed to make this work.
+
+das.data = das.data[(das.data['Gfront_poa'].notna())&(das.data[f'power_dc_inv{rownum}'].notna())&(das.data['row2wind_speed'].notna())] 
+
+das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gfront_poa', t_amb='temp-amb-', w_vel='wind--')
+
+#das.review_column_groups()
+
+(results_out, df) = runCaptest(sam, das, samfile, rownum)
+
+plotAlbedo(results_out, df, rownum, 'Front POA only')
+savePowervPOA(df, rownum, 'FrontPOA')
 
 
-# save Power vs POA plots for each time interval.  To suppress warnings, do pip install holoviews==1.14.9  (warnings show up in 1.15)
+# ## Set up regression details for the run of Row 9 - Gtotal
+# 
+# 
+# 
+# 
 
-for (index, row) in df.iterrows():
-    plot1 = row.DAS.scatter_hv().relabel('DAS')
-    plot1_test = hv.Points([[ row.poa, results_out.loc[index].DAS_test ]]).opts(color='blue', marker='triangle', size=20)
-                           
+# In[48]:
 
-    plot2 = row.SAM.scatter_hv().relabel('SAM')
-    plot2_test = hv.Points([[  row.poa, results_out.loc[index].SAM_test ] ]).opts(color='red', marker='square', size=15)
 
-    plot = plot1 * plot2 * plot1_test * plot2_test
-    plot.label=row.date.strftime('%Y-%m-%d')
-    hv.save(plot, os.path.join('images',f'Row{rownum}_PvsPOA_{plot.label}.png'), fmt='png')
-    #plot
+das.data.columns
+
+
+# In[52]:
+
+
+rownum = 9
+
+sam.data['Gtotal'] = sam.data[f'poa{rownum}']+sam.data[f'rear_irr{rownum}']*0.85
+sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gtotal', t_amb='temp-amb-', w_vel='wind--')
+# Load 15-minute field data, 6/1/21 - 5/31/22
+das = pvc.CapData('das')
+das.load_data(fname='Rows2-9_2021-2022_15T.csv', source='AlsoEnergy')  # the AlsoEnergy flag is needed to make this work.
+
+das.data = das.data[(das.data['Gfront_poa'].notna())&(das.data[f'power_dc_inv{rownum}'].notna())&(das.data['row2wind_speed'].notna())] 
+
+das.data['Gtotal'] = das.data['Gfront_poa']+das.data['Grear']*0.85
+
+das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gtotal', t_amb='temp-amb-', w_vel='wind--')
+
+#das.review_column_groups()
+
+(results_out, df) = runCaptest(sam, das, samfile, rownum)
+
+plotAlbedo(results_out, df, rownum, 'Gtotal')
+savePowervPOA(df, rownum, 'Gtotal')
+
+
+# ## Look at Row2 - both POA only and Gtotal
+# 
+
+# In[58]:
+
+
+rownum = 2
+
+sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa=f'poa{rownum}', t_amb='temp-amb-', w_vel='wind--')
+# Load 15-minute field data, 6/1/21 - 5/31/22
+das = pvc.CapData('das')
+das.load_data(fname='Rows2-9_2021-2022_15T.csv', source='AlsoEnergy')  # the AlsoEnergy flag is needed to make this work.
+
+das.data = das.data[(das.data['Gfront_poa'].notna())&(das.data[f'power_dc_inv{rownum}'].notna())&(das.data['row2wind_speed'].notna())] 
+
+das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gfront_poa', t_amb='temp-amb-', w_vel='wind--')
+
+#das.review_column_groups()
+
+(results_out, df) = runCaptest(sam, das, samfile, rownum)
+
+plotAlbedo(results_out, df, rownum, 'Front POA only')
+savePowervPOA(df, rownum, 'FrontPOA')
+
+
+# In[59]:
+
+
+rownum = 2
+
+sam.data['Gtotal'] = sam.data[f'poa{rownum}']+sam.data[f'rear_irr{rownum}']*0.69
+sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gtotal', t_amb='temp-amb-', w_vel='wind--')
+# Load 15-minute field data, 6/1/21 - 5/31/22
+das = pvc.CapData('das')
+das.load_data(fname='Rows2-9_2021-2022_15T.csv', source='AlsoEnergy')  # the AlsoEnergy flag is needed to make this work.
+
+das.data = das.data[(das.data['Gfront_poa'].notna())&(das.data[f'power_dc_inv{rownum}'].notna())&(das.data['row2wind_speed'].notna())] 
+
+das.data['Gtotal'] = das.data['Gfront_poa']+das.data['Grear']*0.85
+
+das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gtotal', t_amb='temp-amb-', w_vel='wind--')
+
+#das.review_column_groups()
+
+(results_out, df) = runCaptest(sam, das, samfile, rownum)
+
+plotAlbedo(results_out, df, rownum, 'Gtotal')
+savePowervPOA(df, rownum, 'Gtotal')
+
     
     
 
 
-# In[24]:
+# ## Look at Row 4 both POA only and Gtotal
+
+# In[61]:
 
 
-plot
+rownum = 4
+
+sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa=f'poa{rownum}', t_amb='temp-amb-', w_vel='wind--')
+# Load 15-minute field data, 6/1/21 - 5/31/22
+das = pvc.CapData('das')
+das.load_data(fname='Rows2-9_2021-2022_15T.csv', source='AlsoEnergy')  # the AlsoEnergy flag is needed to make this work.
+
+das.data = das.data[(das.data['Gfront_poa'].notna())&(das.data[f'power_dc_inv{rownum}'].notna())&(das.data['row2wind_speed'].notna())] 
+
+das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gfront_poa', t_amb='temp-amb-', w_vel='wind--')
+
+#das.review_column_groups()
+
+(results_out, df) = runCaptest(sam, das, samfile, rownum)
+
+plotAlbedo(results_out, df, rownum, 'Front POA only')
+savePowervPOA(df, rownum, 'FrontPOA')
 
 
-# In[25]:
+# In[62]:
 
 
-print(row)
-results_out.loc[index].SAM_test
+rownum = 4
 
+sam.data['Gtotal'] = sam.data[f'poa{rownum}']+sam.data[f'rear_irr{rownum}']*0.69
+sam.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gtotal', t_amb='temp-amb-', w_vel='wind--')
+# Load 15-minute field data, 6/1/21 - 5/31/22
+das = pvc.CapData('das')
+das.load_data(fname='Rows2-9_2021-2022_15T.csv', source='AlsoEnergy')  # the AlsoEnergy flag is needed to make this work.
 
-# In[ ]:
+das.data = das.data[(das.data['Gfront_poa'].notna())&(das.data[f'power_dc_inv{rownum}'].notna())&(das.data['row2wind_speed'].notna())] 
 
+das.data['Gtotal'] = das.data['Gfront_poa']+das.data['Grear']*0.85
 
+das.set_regression_cols(power=f'power_dc_inv{rownum}', poa='Gtotal', t_amb='temp-amb-', w_vel='wind--')
 
+#das.review_column_groups()
+
+(results_out, df) = runCaptest(sam, das, samfile, rownum)
+
+plotAlbedo(results_out, df, rownum, 'Gtotal')
+savePowervPOA(df, rownum, 'Gtotal')
 
 
 # In[ ]:
