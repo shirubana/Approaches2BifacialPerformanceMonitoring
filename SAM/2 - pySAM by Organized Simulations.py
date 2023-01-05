@@ -9,6 +9,7 @@
 # In[1]:
 
 
+# Written for nrel-pysam 3.0.2
 import PySAM.Pvsamv1 as PV
 import PySAM.Grid as Grid
 import PySAM.Utilityrate5 as UtilityRate
@@ -167,14 +168,14 @@ orga = pd.read_excel('..\Combinations.xlsx', skiprows = 20)
 orga.fillna(method='ffill')
 
 
-# In[12]:
+# In[14]:
 
 
-InputFilesFolder = r'C:\Users\sayala\Documents\GitHub\Studies\Approaches2BifacialPerformanceMonitoring\InputFiles'
-ResultsFolder = r'C:\Users\sayala\Documents\GitHub\Studies\Approaches2BifacialPerformanceMonitoring\SAM\Results'
+InputFilesFolder = r'..\InputFiles'
+ResultsFolder = r'..\SAM\Results'
 
 
-# In[33]:
+# In[21]:
 
 
 dfAll = pd.DataFrame()
@@ -228,7 +229,7 @@ for ii in range(0, len(orga)): # loop here over all the weather files or sims.
     ur9.execute()
     so9.execute()
 
-    # SAVE RESULTS
+    # SAVE RESULTS|
     # I usually save 1 all the data for 1 of the simulations, and all the others save just the main ones we need like DCP, temp. and front/rear irradiance.
 
     results = pv2.Outputs.export()
@@ -274,17 +275,18 @@ for ii in range(0, len(orga)): # loop here over all the weather files or sims.
     res['Power9']= res['Power9']/system_capacity9 # normalizing by the system_capacity
 
 #    res.index = timestamps
-
+    res.to_csv(savefilevar, float_format='%g')
     dfAll = pd.concat([dfAll, res], ignore_index=True, axis=0)
+    
 
 
-# In[34]:
+# In[16]:
 
 
 dfAll.keys()
 
 
-# In[36]:
+# In[17]:
 
 
 dfAll.to_pickle('Results_pysam.pkl')
