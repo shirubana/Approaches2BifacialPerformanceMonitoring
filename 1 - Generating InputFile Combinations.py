@@ -186,12 +186,29 @@ data2 = data[filterdates].copy()
 
 data2 = data[filterdates].resample('60T', label='left', closed='left').mean().copy()
 data3 = data[filterdates].resample('60T', label='right', closed='right').mean().copy()
+data4 = data[filterdates].resample('15T', label='right', closed='right').mean().copy()
 
 
 # In[9]:
 
 
 data2.keys()
+
+
+# In[25]:
+
+
+# save data4 field das data row 9 as .csv for consumption by pvcaptest
+#data4['Hydra_avg'] = np.average(data4[['Hydra_current_1','Hydra_current_2','Hydra_current_3','Hydra_current_4','Hydra_current_5',
+#                                      'Hydra_current_6','Hydra_current_7','Hydra_current_8','Hydra_current_9','Hydra_current_10',
+#                                      'Hydra_current_11','Hydra_current_12']])
+data4_out = data4[['Gfront','Grear', 'row2wind_speed','temp_ambient_FieldAverage',
+              'row9dcp', 'row9tmod_1', 'row9tmod_2', 'sunkitty_GRI_CM22', 'SRRL_GHI', 'row7RotatingAlbedometer_CM11_Down',
+              'row7RotatingAlbedometer_CM11_Up']]
+data4_out = data4_out.rename(columns={'Gfront':'Gfront_poa','row9dcp':'row9_inv', 
+                          'sunkitty_GRI_CM22':'albedo_down', 'SRRL_GHI':'albedo_up'})
+print(data4_out.columns)
+data4_out.to_csv(os.path.join('Analysis','data','Row9_2021-2022_15T.csv'))
 
 
 # In[66]:

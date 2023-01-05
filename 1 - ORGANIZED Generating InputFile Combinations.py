@@ -238,6 +238,7 @@ def save_TMY3(datecol, timecol, windspeed, temp_amb, Albedo, POA=None, DHI=None,
 filterdates = (data.index >= '2021-06-01')  & (data.index < '2022-06-01') 
 data2 = data[filterdates].copy()
 data3 = data[filterdates].resample('60T', label='right', closed='right').mean().copy()
+data_das = data[filterdates].resample('15T', label='right', closed='right').mean().copy()
 
 
 # In[11]:
@@ -250,6 +251,27 @@ data = data[filterdates].resample('60T', label='left', closed='left').mean().cop
 
 
 data2.keys()
+
+
+# In[16]:
+
+
+# save data_das field das data as four .csv files for consumption by pvcaptest
+data_das['Hydra_avg'] = np.average(data_das[['Hydra_current_1','Hydra_current_2','Hydra_current_3','Hydra_current_4','Hydra_current_5',
+                                      'Hydra_current_6','Hydra_current_7','Hydra_current_8','Hydra_current_9','Hydra_current_10',
+                                      'Hydra_current_11','Hydra_current_12']])
+data_das_out = data_das[['Gfront','Grear', 'row2wind_speed','temp_ambient_FieldAverage',
+                        'sunkitty_GRI_CM22', 'SRRL_GHI', 'row7RotatingAlbedometer_CM11_Down',
+                        'row7RotatingAlbedometer_CM11_Up','Hydra_avg',
+                        'Yf2','row2tmod_1', 'row2tmod_2', 
+                         'Yf4','row4tmod_1', 'row4tmod_2', 
+                         'Yf8','row8tmod_1', 'row8tmod_2', 
+                         'Yf9', 'row9tmod_1', 'row9tmod_2']]
+data_das_out = data_das_out.rename(columns={'Gfront':'Gfront_poa','Yf2':'power_dc_inv2',
+                                            'Yf4':'power_dc_inv4','Yf8':'power_dc_inv8','Yf9':'power_dc_inv9', 
+                          'sunkitty_GRI_CM22':'albedo_down', 'SRRL_GHI':'albedo_up'})
+print(data_das_out.columns)
+data_das_out.to_csv(os.path.join('Analysis','data','Rows2-9_2021-2022_15T.csv'))
 
 
 # In[13]:
