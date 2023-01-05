@@ -26,36 +26,48 @@ sif9 = 'Row9Json'
 jsonnames = ['Row2PrismBifi', 'Row4LongiBifi', 'Row8MONOFACIALReference', 'Row9Sunpreme']
 
 
-# In[2]:
+# In[35]:
+
+
+import PySAM
+
+
+# In[ ]:
+
+
+
+
+
+# In[44]:
 
 
 file_names = ["pvsamv1", "grid", "utilityrate5", "cashloan"]
 
 pv2 = PV.new()  # also tried PVWattsSingleOwner
 grid2 = Grid.from_existing(pv2)
-so2 = Cashloan.from_existing(grid2, 'FlatPlatePVCommercial')
 ur2 = UtilityRate.from_existing(pv2)
+so2 = Cashloan.from_existing(grid2, 'FlatPlatePVCommercial')
 
 
 pv4 = PV.new()  # also tried PVWattsSingleOwner
 grid4 = Grid.from_existing(pv4)
-so4 = Cashloan.from_existing(grid4, 'FlatPlatePVCommercial')
 ur4 = UtilityRate.from_existing(pv4)
+so4 = Cashloan.from_existing(grid4, 'FlatPlatePVCommercial')
 
 
 pv8 = PV.new()  # also tried PVWattsSingleOwner
 grid8 = Grid.from_existing(pv8)
-so8 = Cashloan.from_existing(grid8, 'FlatPlatePVCommercial')
 ur8 = UtilityRate.from_existing(pv8)
+so8 = Cashloan.from_existing(grid8, 'FlatPlatePVCommercial')
 
 
 pv9 = PV.new()  # also tried PVWattsSingleOwner
 grid9 = Grid.from_existing(pv9)
-so9 = Cashloan.from_existing(grid9, 'FlatPlatePVCommercial')
 ur9 = UtilityRate.from_existing(pv9)
+so9 = Cashloan.from_existing(grid9, 'FlatPlatePVCommercial')
 
 
-# In[3]:
+# In[45]:
 
 
 for count, module in enumerate([pv2, grid2, ur2, so2]):
@@ -72,7 +84,7 @@ for count, module in enumerate([pv2, grid2, ur2, so2]):
                 print(module, k, v)
 
 
-# In[4]:
+# In[46]:
 
 
 for count, module in enumerate([pv4, grid4, ur4, so4]):
@@ -89,7 +101,7 @@ for count, module in enumerate([pv4, grid4, ur4, so4]):
                 print(module, k, v)
 
 
-# In[5]:
+# In[48]:
 
 
 for count, module in enumerate([pv8, grid8, ur8, so8]):
@@ -106,7 +118,7 @@ for count, module in enumerate([pv8, grid8, ur8, so8]):
                 print(module, k, v)
 
 
-# In[6]:
+# In[12]:
 
 
 for count, module in enumerate([pv9, grid9, ur9, so9]):
@@ -125,7 +137,7 @@ for count, module in enumerate([pv9, grid9, ur9, so9]):
 
 # ##### Sanity checks
 
-# In[7]:
+# In[13]:
 
 
 pv2.SolarResource.solar_resource_file
@@ -136,13 +148,13 @@ pv2.SolarResource.albedo
 
 # # LOOP THROUGH COMBOS
 
-# In[8]:
+# In[14]:
 
 
 import pandas as pd
 
 
-# In[9]:
+# In[15]:
 
 
 # 2-Bifi: Prism 457cBSTC
@@ -150,7 +162,7 @@ import pandas as pd
 # 9-Bifi: Sunpreme Inc. SNPM-HxB-400
 
 
-# In[10]:
+# In[16]:
 
 
 # For unknown reasons, pySAM does not calculate this number and you have to obtain it from the GUI.
@@ -161,21 +173,50 @@ system_capacity8 = 71.078
 system_capacity9 = 80.089
 
 
-# In[11]:
+# In[17]:
 
 
 orga = pd.read_excel('..\Combinations.xlsx', skiprows = 20)
 orga.fillna(method='ffill')
 
 
-# In[14]:
+# In[18]:
 
 
 InputFilesFolder = r'..\InputFiles'
 ResultsFolder = r'..\SAM\Results'
 
 
+# In[19]:
+
+
+import pvlib
+
+
 # In[21]:
+
+
+wftimestamp, meta = pvlib.iotools.read_psm3(os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[0]['WeatherFile_Name']+'.csv'), map_variables=True)
+datelist = list(wftimestamp.index) 
+months = list(wftimestamp.Month)
+years = list(wftimestamp.Month)
+days = list(wftimestamp.Month)
+hours = list(wftimestamp.Month)
+
+
+# In[29]:
+
+
+pv4.Shading.subarray1_shade_mode
+
+
+# In[27]:
+
+
+orga['irrad_mod'].unique()
+
+
+# In[30]:
 
 
 dfAll = pd.DataFrame()
@@ -204,6 +245,18 @@ for ii in range(0, len(orga)): # loop here over all the weather files or sims.
     pv8.SolarResource.irrad_mode = orga.loc[ii]['irrad_mod']
     pv9.SolarResource.sky_model = orga.loc[ii]['sky_model']
     pv9.SolarResource.irrad_mode = orga.loc[ii]['irrad_mod']
+    
+    # So that irrad_mod for POA works shading has to be inactivated.
+    if orga.loc[ii]['irrad_mod'] >= 3:
+        pv2.Shading.subarray1_shade_mode = 0
+        pv4.Shading.subarray1_shade_mode = 0
+        pv8.Shading.subarray1_shade_mode = 0
+        pv9.Shading.subarray1_shade_mode = 0
+    else:
+        pv2.Shading.subarray1_shade_mode = 1.0
+        pv4.Shading.subarray1_shade_mode = 1.0
+        pv8.Shading.subarray1_shade_mode = 1.0
+        pv9.Shading.subarray1_shade_mode = 1.0
     
     grid2.SystemOutput.gen = [0] * 8760  # p_out   # let's set all the values to 0
     pv2.execute()
@@ -255,17 +308,22 @@ for ii in range(0, len(orga)): # loop here over all the weather files or sims.
     celltemp9 = list(results['subarray1_celltemp'])
     rear9 = list(results['subarray1_poa_rear'])
     front9 = list(results['subarray1_poa_front'])
+
+    dni = list(results['dn'])
+    dhi = list(results['df'])
+    alb = list(results['alb'])
+    
     
     simtyp = [orga.loc[ii]['Sim']] * 8760
 
     res = pd.DataFrame(list(zip(simtyp, power2, celltemp2, rear2, front2,
                                power4, celltemp4, rear4, front4,
                                power8, celltemp8, front8,
-                                power9, celltemp9, rear9, front9)),
+                                power9, celltemp9, rear9, front9, dni, dhi, alb)),
            columns = ['Sim', 'Power2' , 'CellTemp2', 'Rear2', 'Front2',
                      'Power4' , 'CellTemp4', 'Rear4', 'Front4',
                      'Power8' , 'CellTemp8', 'Front8',
-                     'Power9' , 'CellTemp9', 'Rear9', 'Front9'])
+                     'Power9' , 'CellTemp9', 'Rear9', 'Front9', 'DNI', 'DHI', 'Alb'])
 
     res = res[0:8760]
     res['index'] = res.index
@@ -273,462 +331,20 @@ for ii in range(0, len(orga)): # loop here over all the weather files or sims.
     res['Power4']= res['Power4']/system_capacity4 # normalizing by the system_capacity
     res['Power8']= res['Power8']/system_capacity8 # normalizing by the system_capacity
     res['Power9']= res['Power9']/system_capacity9 # normalizing by the system_capacity
+    res['datetimes'] = datelist
+    res['Year'] = years
+    res['Month'] = months
+    res['Hour'] = hours
 
-#    res.index = timestamps
+    #    res.index = timestamps
+    res.to_pickle('Sim_'+orga.loc[ii]['Sim']+'.pkl')
     res.to_csv(savefilevar, float_format='%g')
     dfAll = pd.concat([dfAll, res], ignore_index=True, axis=0)
     
 
 
-# In[16]:
-
-
-dfAll.keys()
-
-
-# In[17]:
+# In[ ]:
 
 
 dfAll.to_pickle('Results_pysam.pkl')
-
-
-# In[38]:
-
-
-fielddataFolder = '..\FieldData'
-
-try:
-    data = pd.read_pickle(os.path.join(fielddataFolder,'DATA_Release.pickle'))
-except AttributeError:
-    raise Exception('Error: pandas needs to be >= 1.5.0 to read this pickle file')
-        
-print("Clean pickle loaded for Plotting Production Data, # datapoints: ", data.__len__())
-print("Spanning from", data.index[0], " to ", data.index[-1])
-
-filterdates = (data.index >= '2021-06-01')  & (data.index < '2022-06-01') 
-data = data[filterdates].resample('60T', label='left', closed='left').mean().copy()
-
-
-# In[39]:
-
-
-# FRONT POA
-#1
-data['rowGfront_IMT_Average'] = data[['row3Gfront', 'row2Gfront', 'row5Gfront', 'row7Gfront', 'row9Gfront']].mean(axis=1)
-
-# 9 --> NOTE: INCLUDED ROTATING ALBEDOMETER
-data['rowGfront_ALL_Averages'] = data[['row3Gfront', 'row2Gfront', 'row3Gfront_CM11', 'row3Gfront_Licor',
-                                      'row5Gfront', 'row7Gfront', 'row9Gfront', 'row7RotatingAlbedometer_CM11_Up']].mean(axis=1)
-
-#10  --> NOTE: INCLUDED ROTATING ALBEDOMETER
-data['rowGfront_Broadband_Averages'] = data[['row3Gfront_CM11', 'row3Gfront_Licor', 'row7RotatingAlbedometer_CM11_Up']].mean(axis=1)
-
-# REAR POA
-
-#0
-data['row3Grear_IMT_Averages'] = data[['row3Grear_IMT_West', 'row3Grear_IMT_CenterWest', 
-                                      'row3Grear_IMT_CenterEast', 'row3Grear_IMT_East']].mean(axis=1)
-
-#14
-data['rowGrear_IMT_Averages'] = data[['row3Grear_IMT_West', 'row3Grear_IMT_CenterWest', 
-                                      'row3Grear_IMT_CenterEast', 'row3Grear_IMT_East',
-                                     'row5Grear', 'row7Grear', 'row7Grear_IMT_CenterEast', 'row7Grear_IMT_East']].mean(axis=1)
-
-#15  --> NOTE: DID NOT INCLUDE ROTATING ALBEDOMETER
-data['rowGrear_ALL_Averages'] = data[['row3Grear_IMT_West', 'row3Grear_IMT_CenterWest', 
-                                      'row3Grear_IMT_CenterEast', 'row3Grear_IMT_East',
-                                     'row5Grear', 'row7Grear', 'row7Grear_IMT_CenterEast', 'row7Grear_IMT_East',
-                                     'row3Grear_CM11', 'row3Grear_Licor']].mean(axis=1)
-
-data['rowGrear_Broadband_Averages'] = data[['row3Grear_CM11', 'row3Grear_Licor']].mean(axis=1)
-
-
-# WIND
-data['rowFieldWindSpeedAverage'] = data[['row7wind_speed','row2wind_speed']].mean(axis=1)
-
-
-# ALBEDO BASELINE..?
-
-data['sunkity_CM11_GRI_over_SRRL_GHI'] = data['sunkitty_GRI_CM22'] / data['SRRL_GHI']
-
-
-# In[41]:
-
-
-import bifacial_radiance as br
-
-
-# In[47]:
-
-
-df = dfAll.copy()
-
-
-# In[84]:
-
-
-# br.performance.MBD("meas", "model")
-MBD_power2 = []
-MBD_power4 = []
-MBD_power8 = []
-MBD_power9 = []
-
-MBD_Gfront2 = []
-MBD_Gfront4 = []
-MBD_Gfront8 = []
-MBD_Gfront9 = []
-
-MBD_Grear2 = []
-MBD_Grear4 = []
-MBD_Grear9 = []
-
-MBD_Modtemp2 = []
-MBD_Modtemp4 = []
-MBD_Modtemp8 = []
-MBD_Modtemp9 = []
-
-sim_all = []  
-
-SimsM1 = orga.loc[orga['Method']==1]['Sim']
-
-for sim in SimsM1:
-    modper2 = df.loc[df['Sim'] == sim]['Power2'].values
-    modfront2 = df.loc[df['Sim'] == sim]['Front2'].values
-    modrear2  = df.loc[df['Sim'] == sim]['Rear2'].values
-    modtemp2  = df.loc[df['Sim'] == sim]['CellTemp2'].values
-    
-    modper4 = df.loc[df['Sim'] == sim]['Power4'].values
-    modfront4 = df.loc[df['Sim'] == sim]['Front4'].values
-    modrear4  = df.loc[df['Sim'] == sim]['Rear4'].values
-    modtemp4  = df.loc[df['Sim'] == sim]['CellTemp4'].values
-    
-    modper8 = df.loc[df['Sim'] == sim]['Power8'].values
-    modfront8 = df.loc[df['Sim'] == sim]['Front8'].values
-    modtemp8  = df.loc[df['Sim'] == sim]['Power8'].values
-    
-    modper9 = df.loc[df['Sim'] == sim]['Power9'].values
-    modfront9 = df.loc[df['Sim'] == sim]['Front9'].values
-    modrear9  = df.loc[df['Sim'] == sim]['Rear9'].values
-    modtemp9  = df.loc[df['Sim'] == sim]['CellTemp9'].values
-    
-    measfront  = data.row3Gfront
-    measrear  = data.row3Grear_IMT_Averages
-    meastemp = data.row2tmod_1
-
-
-    sim_all.append(sim)
-
-    MBD_power2.append(br.performance.MBD(data.PR2, modper2)) 
-    MBD_power4.append(br.performance.MBD(data.PR4, modper4))
-    MBD_power8.append(br.performance.MBD(data.PR8, modper8))
-    MBD_power9.append(br.performance.MBD(data.PR9, modper9))
-    
-    MBD_Gfront2.append(br.performance.MBD(measfront, modfront2)) 
-    MBD_Gfront4.append(br.performance.MBD(measfront, modfront4))
-    MBD_Gfront8.append(br.performance.MBD(measfront, modfront8))
-    MBD_Gfront9.append(br.performance.MBD(measfront, modfront9))
-
-    MBD_Grear2.append(br.performance.MBD(measrear, modrear2))
-    MBD_Grear4.append(br.performance.MBD(measrear, modrear4))
-    MBD_Grear9.append(br.performance.MBD(measrear, modrear9))
-
-    MBD_Modtemp2.append(br.performance.MBD(meastemp, modtemp2))
-    MBD_Modtemp4.append(br.performance.MBD(meastemp, modtemp4))
-    MBD_Modtemp8.append(br.performance.MBD(meastemp, modtemp8))
-    MBD_Modtemp9.append(br.performance.MBD(meastemp, modtemp9))
-    
-MBDres = pd.DataFrame(list(zip(sim_all, MBD_power2, MBD_power4, MBD_power8, MBD_power9,
-                               MBD_Gfront2, MBD_Gfront4, MBD_Gfront8, MBD_Gfront9,
-                               MBD_Grear2, MBD_Grear4, MBD_Grear9,
-                                MBD_Modtemp2, MBD_Modtemp4, MBD_Modtemp8, MBD_Modtemp9)),
-           columns = ['Sim', 'MBD_power2' , 'MBD_power4', 'MBD_power8', 'MBD_power9',
-                     'MBD_Gfront2' , 'MBD_Gfront4', 'MBD_Gfront8', 'MBD_Gfront9',
-                     'MBD_Grear2' , 'MBD_Grear4', 'MBD_Grear9',
-                     'MBD_Modtemp2' , 'MBD_Modtemp4', 'MBD_Modtemp8', 'MBD_Modtemp9'])
-
-
-# In[85]:
-
-
-# br.performance.MBD("meas", "model")
-MBD_power2 = []
-MBD_power4 = []
-MBD_power8 = []
-MBD_power9 = []
-
-MBD_Gfront2 = []
-MBD_Gfront4 = []
-MBD_Gfront8 = []
-MBD_Gfront9 = []
-
-MBD_Grear2 = []
-MBD_Grear4 = []
-MBD_Grear9 = []
-
-MBD_Modtemp2 = []
-MBD_Modtemp4 = []
-MBD_Modtemp8 = []
-MBD_Modtemp9 = []
-
-sim_all = []  
-
-SimsM1 = orga.loc[orga['Method']==1]['Sim']
-
-for sim in SimsM1:
-    modper2 = df.loc[df['Sim'] == sim]['Power2'].values
-    modfront2 = df.loc[df['Sim'] == sim]['Front2'].values
-    modrear2  = df.loc[df['Sim'] == sim]['Rear2'].values
-    modtemp2  = df.loc[df['Sim'] == sim]['CellTemp2'].values
-    
-    modper4 = df.loc[df['Sim'] == sim]['Power4'].values
-    modfront4 = df.loc[df['Sim'] == sim]['Front4'].values
-    modrear4  = df.loc[df['Sim'] == sim]['Rear4'].values
-    modtemp4  = df.loc[df['Sim'] == sim]['CellTemp4'].values
-    
-    modper8 = df.loc[df['Sim'] == sim]['Power8'].values
-    modfront8 = df.loc[df['Sim'] == sim]['Front8'].values
-    modtemp8  = df.loc[df['Sim'] == sim]['Power8'].values
-    
-    modper9 = df.loc[df['Sim'] == sim]['Power9'].values
-    modfront9 = df.loc[df['Sim'] == sim]['Front9'].values
-    modrear9  = df.loc[df['Sim'] == sim]['Rear9'].values
-    modtemp9  = df.loc[df['Sim'] == sim]['CellTemp9'].values
-    
-    measfront  = data.row3Gfront
-    measrear  = data.row3Grear_IMT_Averages
-    meastemp = data.row2tmod_1
-
-
-    sim_all.append(sim)
-
-    MBD_power2.append(br.performance.RMSE(data.PR2, modper2)) 
-    MBD_power4.append(br.performance.RMSE(data.PR4, modper4))
-    MBD_power8.append(br.performance.RMSE(data.PR8, modper8))
-    MBD_power9.append(br.performance.RMSE(data.PR9, modper9))
-    
-    MBD_Gfront2.append(br.performance.RMSE(measfront, modfront2)) 
-    MBD_Gfront4.append(br.performance.RMSE(measfront, modfront4))
-    MBD_Gfront8.append(br.performance.RMSE(measfront, modfront8))
-    MBD_Gfront9.append(br.performance.RMSE(measfront, modfront9))
-
-    MBD_Grear2.append(br.performance.RMSE(measrear, modrear2))
-    MBD_Grear4.append(br.performance.RMSE(measrear, modrear4))
-    MBD_Grear9.append(br.performance.RMSE(measrear, modrear9))
-
-    MBD_Modtemp2.append(br.performance.RMSE(meastemp, modtemp2))
-    MBD_Modtemp4.append(br.performance.RMSE(meastemp, modtemp4))
-    MBD_Modtemp8.append(br.performance.RMSE(meastemp, modtemp8))
-    MBD_Modtemp9.append(br.performance.RMSE(meastemp, modtemp9))
-
-RMSE = pd.DataFrame(list(zip(sim_all, MBD_power2, MBD_power4, MBD_power8, MBD_power9,
-                               MBD_Gfront2, MBD_Gfront4, MBD_Gfront8, MBD_Gfront9,
-                               MBD_Grear2, MBD_Grear4, MBD_Grear9,
-                                MBD_Modtemp2, MBD_Modtemp4, MBD_Modtemp8, MBD_Modtemp9)),
-           columns = ['Sim', 'MBD_power2' , 'MBD_power4', 'MBD_power8', 'MBD_power9',
-                     'MBD_Gfront2' , 'MBD_Gfront4', 'MBD_Gfront8', 'MBD_Gfront9',
-                     'MBD_Grear2' , 'MBD_Grear4', 'MBD_Grear9',
-                     'MBD_Modtemp2' , 'MBD_Modtemp4', 'MBD_Modtemp8', 'MBD_Modtemp9'])
-
-
-# In[86]:
-
-
-# br.performance.MBD("meas", "model")
-MBD_power2 = []
-MBD_power4 = []
-MBD_power8 = []
-MBD_power9 = []
-
-MBD_Gfront2 = []
-MBD_Gfront4 = []
-MBD_Gfront8 = []
-MBD_Gfront9 = []
-
-MBD_Grear2 = []
-MBD_Grear4 = []
-MBD_Grear9 = []
-
-MBD_Modtemp2 = []
-MBD_Modtemp4 = []
-MBD_Modtemp8 = []
-MBD_Modtemp9 = []
-
-sim_all = []  
-
-SimsM1 = orga.loc[orga['Method']==1]['Sim']
-
-for sim in SimsM1:
-    modper2 = df.loc[df['Sim'] == sim]['Power2'].values
-    modfront2 = df.loc[df['Sim'] == sim]['Front2'].values
-    modrear2  = df.loc[df['Sim'] == sim]['Rear2'].values
-    modtemp2  = df.loc[df['Sim'] == sim]['CellTemp2'].values
-    
-    modper4 = df.loc[df['Sim'] == sim]['Power4'].values
-    modfront4 = df.loc[df['Sim'] == sim]['Front4'].values
-    modrear4  = df.loc[df['Sim'] == sim]['Rear4'].values
-    modtemp4  = df.loc[df['Sim'] == sim]['CellTemp4'].values
-    
-    modper8 = df.loc[df['Sim'] == sim]['Power8'].values
-    modfront8 = df.loc[df['Sim'] == sim]['Front8'].values
-    modtemp8  = df.loc[df['Sim'] == sim]['Power8'].values
-    
-    modper9 = df.loc[df['Sim'] == sim]['Power9'].values
-    modfront9 = df.loc[df['Sim'] == sim]['Front9'].values
-    modrear9  = df.loc[df['Sim'] == sim]['Rear9'].values
-    modtemp9  = df.loc[df['Sim'] == sim]['CellTemp9'].values
-    
-    measfront  = data.row3Gfront
-    measrear  = data.row3Grear_IMT_Averages
-    meastemp = data.row2tmod_1
-
-
-    sim_all.append(sim)
-
-    MBD_power2.append(br.performance.MBD_abs(data.PR2, modper2)) 
-    MBD_power4.append(br.performance.MBD_abs(data.PR4, modper4))
-    MBD_power8.append(br.performance.MBD_abs(data.PR8, modper8))
-    MBD_power9.append(br.performance.MBD_abs(data.PR9, modper9))
-    
-    MBD_Gfront2.append(br.performance.MBD_abs(measfront, modfront2)) 
-    MBD_Gfront4.append(br.performance.MBD_abs(measfront, modfront4))
-    MBD_Gfront8.append(br.performance.MBD_abs(measfront, modfront8))
-    MBD_Gfront9.append(br.performance.MBD_abs(measfront, modfront9))
-
-    MBD_Grear2.append(br.performance.MBD_abs(measrear, modrear2))
-    MBD_Grear4.append(br.performance.MBD_abs(measrear, modrear4))
-    MBD_Grear9.append(br.performance.MBD_abs(measrear, modrear9))
-
-    MBD_Modtemp2.append(br.performance.MBD_abs(meastemp, modtemp2))
-    MBD_Modtemp4.append(br.performance.MBD_abs(meastemp, modtemp4))
-    MBD_Modtemp8.append(br.performance.MBD_abs(meastemp, modtemp8))
-    MBD_Modtemp9.append(br.performance.MBD_abs(meastemp, modtemp9))
-
-MBD_abs = pd.DataFrame(list(zip(sim_all, MBD_power2, MBD_power4, MBD_power8, MBD_power9,
-                               MBD_Gfront2, MBD_Gfront4, MBD_Gfront8, MBD_Gfront9,
-                               MBD_Grear2, MBD_Grear4, MBD_Grear9,
-                                MBD_Modtemp2, MBD_Modtemp4, MBD_Modtemp8, MBD_Modtemp9)),
-           columns = ['Sim', 'MBD_power2' , 'MBD_power4', 'MBD_power8', 'MBD_power9',
-                     'MBD_Gfront2' , 'MBD_Gfront4', 'MBD_Gfront8', 'MBD_Gfront9',
-                     'MBD_Grear2' , 'MBD_Grear4', 'MBD_Grear9',
-                     'MBD_Modtemp2' , 'MBD_Modtemp4', 'MBD_Modtemp8', 'MBD_Modtemp9'])
-
-
-# In[87]:
-
-
-# br.performance.MBD("meas", "model")
-MBD_power2 = []
-MBD_power4 = []
-MBD_power8 = []
-MBD_power9 = []
-
-MBD_Gfront2 = []
-MBD_Gfront4 = []
-MBD_Gfront8 = []
-MBD_Gfront9 = []
-
-MBD_Grear2 = []
-MBD_Grear4 = []
-MBD_Grear9 = []
-
-MBD_Modtemp2 = []
-MBD_Modtemp4 = []
-MBD_Modtemp8 = []
-MBD_Modtemp9 = []
-
-sim_all = []  
-
-SimsM1 = orga.loc[orga['Method']==1]['Sim']
-
-for sim in SimsM1:
-    modper2 = df.loc[df['Sim'] == sim]['Power2'].values
-    modfront2 = df.loc[df['Sim'] == sim]['Front2'].values
-    modrear2  = df.loc[df['Sim'] == sim]['Rear2'].values
-    modtemp2  = df.loc[df['Sim'] == sim]['CellTemp2'].values
-    
-    modper4 = df.loc[df['Sim'] == sim]['Power4'].values
-    modfront4 = df.loc[df['Sim'] == sim]['Front4'].values
-    modrear4  = df.loc[df['Sim'] == sim]['Rear4'].values
-    modtemp4  = df.loc[df['Sim'] == sim]['CellTemp4'].values
-    
-    modper8 = df.loc[df['Sim'] == sim]['Power8'].values
-    modfront8 = df.loc[df['Sim'] == sim]['Front8'].values
-    modtemp8  = df.loc[df['Sim'] == sim]['Power8'].values
-    
-    modper9 = df.loc[df['Sim'] == sim]['Power9'].values
-    modfront9 = df.loc[df['Sim'] == sim]['Front9'].values
-    modrear9  = df.loc[df['Sim'] == sim]['Rear9'].values
-    modtemp9  = df.loc[df['Sim'] == sim]['CellTemp9'].values
-    
-    measfront  = data.row3Gfront
-    measrear  = data.row3Grear_IMT_Averages
-    meastemp = data.row2tmod_1
-
-
-    sim_all.append(sim)
-
-    MBD_power2.append(br.performance.RMSE_abs(data.PR2, modper2)) 
-    MBD_power4.append(br.performance.RMSE_abs(data.PR4, modper4))
-    MBD_power8.append(br.performance.RMSE_abs(data.PR8, modper8))
-    MBD_power9.append(br.performance.RMSE_abs(data.PR9, modper9))
-    
-    MBD_Gfront2.append(br.performance.RMSE_abs(measfront, modfront2)) 
-    MBD_Gfront4.append(br.performance.RMSE_abs(measfront, modfront4))
-    MBD_Gfront8.append(br.performance.RMSE_abs(measfront, modfront8))
-    MBD_Gfront9.append(br.performance.RMSE_abs(measfront, modfront9))
-
-    MBD_Grear2.append(br.performance.RMSE_abs(measrear, modrear2))
-    MBD_Grear4.append(br.performance.RMSE_abs(measrear, modrear4))
-    MBD_Grear9.append(br.performance.RMSE_abs(measrear, modrear9))
-
-    MBD_Modtemp2.append(br.performance.RMSE_abs(meastemp, modtemp2))
-    MBD_Modtemp4.append(br.performance.RMSE_abs(meastemp, modtemp4))
-    MBD_Modtemp8.append(br.performance.RMSE_abs(meastemp, modtemp8))
-    MBD_Modtemp9.append(br.performance.RMSE_abs(meastemp, modtemp9))
-
-RMSE_abs = pd.DataFrame(list(zip(sim_all, MBD_power2, MBD_power4, MBD_power8, MBD_power9,
-                               MBD_Gfront2, MBD_Gfront4, MBD_Gfront8, MBD_Gfront9,
-                               MBD_Grear2, MBD_Grear4, MBD_Grear9,
-                                MBD_Modtemp2, MBD_Modtemp4, MBD_Modtemp8, MBD_Modtemp9)),
-           columns = ['Sim', 'MBD_power2' , 'MBD_power4', 'MBD_power8', 'MBD_power9',
-                     'MBD_Gfront2' , 'MBD_Gfront4', 'MBD_Gfront8', 'MBD_Gfront9',
-                     'MBD_Grear2' , 'MBD_Grear4', 'MBD_Grear9',
-                     'MBD_Modtemp2' , 'MBD_Modtemp4', 'MBD_Modtemp8', 'MBD_Modtemp9'])
-
-
-# In[91]:
-
-
-RMSE_abs
-MBDres
-MBD_abs
-RMSE
-RMSE_abs
-
-
-# In[75]:
-
-
-import matplotlib.pyplot as plt
-
-
-# In[80]:
-
-
-data.keys()
-
-
-# In[97]:
-
-
-plt.plot(data.PR9.values, label='meas')
-plt.plot(df.loc[df['Sim'] == '00']['Power9'].values, label='model')
-plt.legend()
-
-
-# In[98]:
-
-
-plt.plot(data.PR9.values, df.loc[df['Sim'] == '00']['Power9'].values, '.')
-plt.xlim([0, 1.2])
 
