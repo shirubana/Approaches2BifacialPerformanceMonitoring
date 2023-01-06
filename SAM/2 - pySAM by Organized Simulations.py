@@ -30,6 +30,8 @@ jsonnames = ['Row2PrismBifi', 'Row4LongiBifi', 'Row8MONOFACIALReference', 'Row9S
 
 
 import PySAM
+import pvlib
+print(pvlib.__version__)
 
 
 # In[ ]:
@@ -190,21 +192,15 @@ ResultsFolder = r'..\SAM\Results'
 # In[19]:
 
 
-import pvlib
+wftimestamp = pd.read_csv(os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[0]['WeatherFile_Name']+'.csv'), skiprows=2)
+datelist = list(pd.to_datetime(wftimestamp.iloc[:,0:4]))
+months = list(wftimestamp.iloc[:,1])
+years = list(wftimestamp.iloc[:,0])
+days = list(wftimestamp.iloc[:,2])
+hours = list(wftimestamp.iloc[:,3])
 
 
 # In[21]:
-
-
-wftimestamp, meta = pvlib.iotools.read_psm3(os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[0]['WeatherFile_Name']+'.csv'), map_variables=True)
-datelist = list(wftimestamp.index) 
-months = list(wftimestamp.Month)
-years = list(wftimestamp.Month)
-days = list(wftimestamp.Month)
-hours = list(wftimestamp.Month)
-
-
-# In[29]:
 
 
 pv4.Shading.subarray1_shade_mode
