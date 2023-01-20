@@ -218,13 +218,7 @@ def calculatePerformance(effective_irradiance, temp_cell, CECMod):
     return IVcurve_info['p_mp']
 
 
-# In[90]:
-
-
-orga['irrad_mod'].unique()
-
-
-# In[93]:
+# In[20]:
 
 
 dfAll = pd.DataFrame()
@@ -307,10 +301,10 @@ for ii in range(0, len(orga)): # loop here over all the weather files or sims.
     res['Month'] = list(res['datetimes'].dt.month)
     res['Hour'] = list(res['datetimes'].dt.hour)
     
-    res['Power2']= res['Power2']/row2Mod.STC
-    res['Power4']= res['Power4']/row4Mod.STC
-    res['Power8']= res['Power8']/row8Mod.STC
-    res['Power9']= res['Power9']/row9Mod.STC
+    res['Power2']= res['Power2']/row2Mod.STC[0]
+    res['Power4']= res['Power4']/row4Mod.STC[0]
+    res['Power8']= res['Power8']/row8Mod.STC[0]
+    res['Power9']= res['Power9']/row9Mod.STC[0]
     
     res.to_pickle('Sim_'+orga.loc[ii]['Sim']+'.pkl')
     dfAll = pd.concat([dfAll, res], ignore_index=True, axis=0)
@@ -318,19 +312,25 @@ for ii in range(0, len(orga)): # loop here over all the weather files or sims.
 dfAll.to_pickle('Results_bifacialVFpvlib.pkl')
 
 
-# In[102]:
+# In[19]:
+
+
+row2Mod.STC[0]
+
+
+# In[21]:
 
 
 plt.plot(myTMY3['POA'])
 
 
-# In[94]:
+# In[ ]:
 
 
 dfAll
 
 
-# In[60]:
+# In[ ]:
 
 
 wftimestamp, meta = pvlib.iotools.read_psm3(os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[0]['WeatherFile_Name']+'.csv'))
