@@ -170,10 +170,10 @@ import pandas as pd
 # For unknown reasons, pySAM does not calculate this number and you have to obtain it from the GUI.
 # CDELINE:  add 5% derate to level-set row 8 (monofacial) to capacity = 0.995 - 1.0 based on SAM00 initial analysis.
 
-system_capacity2 =  72.04280090332031 * 0.95  
-system_capacity4 = 73.982 * 0.95                
-system_capacity8 = 71.078 * 0.95  
-system_capacity9 = 80.089 * 0.95  
+system_capacity2 =  72.04280090332031 * 1.05  
+system_capacity4 = 73.982 * 1.05                 
+system_capacity8 = 71.078 * 1.05   
+system_capacity9 = 80.089 * 1.05   
 
 
 # In[12]:
