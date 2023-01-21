@@ -253,13 +253,13 @@ data = data[filterdates].resample('60T', label='left', closed='left').mean().cop
 data2.keys()
 
 
-# In[16]:
+# In[19]:
 
 
 # save data_das field das data as four .csv files for consumption by pvcaptest
-data_das['Hydra_avg'] = np.average(data_das[['Hydra_current_1','Hydra_current_2','Hydra_current_3','Hydra_current_4','Hydra_current_5',
+data_das['Hydra_avg'] = data_das[['Hydra_current_1','Hydra_current_2','Hydra_current_3','Hydra_current_4','Hydra_current_5',
                                       'Hydra_current_6','Hydra_current_7','Hydra_current_8','Hydra_current_9','Hydra_current_10',
-                                      'Hydra_current_11','Hydra_current_12']])
+                                      'Hydra_current_11','Hydra_current_12']].mean(axis=1)
 data_das_out = data_das[['Gfront','Grear', 'row2wind_speed','temp_ambient_FieldAverage',
                         'sunkitty_GRI_CM22', 'SRRL_GHI', 'row7RotatingAlbedometer_CM11_Down',
                         'row7RotatingAlbedometer_CM11_Up','Hydra_avg',
