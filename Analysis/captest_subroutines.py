@@ -200,8 +200,8 @@ def runIEC(df, rownum, run, text='', gtotal=False):
     def pcorr(power, poa, tmod, rcs=None, gamma=-0.0035):
         if rcs is None:
             rcs = [1000, 25]
-        return((power *(1-gamma*(tmod-rcs[1])) * rcs[0]/poa))
-        #return power  # bypass the power correction
+        #return((power *(1-gamma*(tmod-rcs[1])) * rcs[0]/poa))
+        return power  # bypass the power correction
     
     if type(rownum)==str:
         text = rownum[1:]
@@ -242,6 +242,7 @@ def runIEC(df, rownum, run, text='', gtotal=False):
         plt.plot(pcorr_ratio['ratio'],'.',label='ratio')
         label = sam1.index[0].strftime('%Y-%m-%d')
         plt.title(f'P_corr {label}. Mean: {pcorr_mean:.3f}')
+        plt.legend()
         fig.autofmt_xdate()
         plt.savefig(os.path.join('images',run,f'Row{rownum}{text}_IEC_{label}.png'))
         plt.close(fig)

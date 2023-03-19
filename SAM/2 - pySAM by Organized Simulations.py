@@ -168,12 +168,12 @@ import pandas as pd
 
 
 # For unknown reasons, pySAM does not calculate this number and you have to obtain it from the GUI.
-# CDELINE:  add 5% derate to level-set row 8 (monofacial) to capacity = 0.995 - 1.0 based on SAM00 initial analysis.
+# CDELINE:  add 5.38% derate to level-set row 8 (monofacial) to capacity = 1.000 based on SAM00 analysis (Tmod not Tamb).
 
-system_capacity2 =  72.04280090332031 * 1.05  
-system_capacity4 = 73.982 * 1.05                 
-system_capacity8 = 71.078 * 1.05   
-system_capacity9 = 80.089 * 1.05   
+system_capacity2 =  72.04280090332031 * (1.0538 + 0.0047) 
+system_capacity4 = 73.982 * (1.0538 + 0.0047)                  
+system_capacity8 = 71.078 * (1.0538 + 0.0047)   
+system_capacity9 = 80.089 * (1.0538 + 0.0047) 
 
 
 # In[12]:
@@ -219,7 +219,7 @@ pv4.Shading.subarray1_shade_mode
 orga['irrad_mod'].unique()
 
 
-# In[ ]:
+# In[18]:
 
 
 dfAll = pd.DataFrame()
@@ -346,7 +346,7 @@ for ii in range(0, len(orga)): # loop here over all the weather files or sims.
     
 
 
-# In[ ]:
+# In[19]:
 
 
 dfAll.to_pickle('Results_pysam.pkl')
