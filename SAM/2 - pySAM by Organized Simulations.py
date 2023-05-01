@@ -6,7 +6,7 @@
 # Runs all combinations in orga, for the 4 rows
 # Calcualtes RMSE & MBD, relative and absolutes
 
-# In[1]:
+# In[19]:
 
 
 # Written for nrel-pysam 3.0.2
@@ -26,7 +26,7 @@ sif9 = 'Row9Json'
 jsonnames = ['Row2PrismBifi', 'Row4LongiBifi', 'Row8MONOFACIALReference', 'Row9Sunpreme']
 
 
-# In[2]:
+# In[20]:
 
 
 import PySAM
@@ -40,7 +40,7 @@ print(pvlib.__version__)
 
 
 
-# In[3]:
+# In[21]:
 
 
 file_names = ["pvsamv1", "grid", "utilityrate5", "cashloan"]
@@ -69,7 +69,7 @@ ur9 = UtilityRate.from_existing(pv9)
 so9 = Cashloan.from_existing(grid9, 'FlatPlatePVCommercial')
 
 
-# In[4]:
+# In[22]:
 
 
 for count, module in enumerate([pv2, grid2, ur2, so2]):
@@ -86,7 +86,7 @@ for count, module in enumerate([pv2, grid2, ur2, so2]):
                 print(module, k, v)
 
 
-# In[5]:
+# In[23]:
 
 
 for count, module in enumerate([pv4, grid4, ur4, so4]):
@@ -103,7 +103,7 @@ for count, module in enumerate([pv4, grid4, ur4, so4]):
                 print(module, k, v)
 
 
-# In[6]:
+# In[24]:
 
 
 for count, module in enumerate([pv8, grid8, ur8, so8]):
@@ -120,7 +120,7 @@ for count, module in enumerate([pv8, grid8, ur8, so8]):
                 print(module, k, v)
 
 
-# In[7]:
+# In[25]:
 
 
 for count, module in enumerate([pv9, grid9, ur9, so9]):
@@ -139,7 +139,7 @@ for count, module in enumerate([pv9, grid9, ur9, so9]):
 
 # ##### Sanity checks
 
-# In[8]:
+# In[26]:
 
 
 pv2.SolarResource.solar_resource_file
@@ -150,13 +150,13 @@ pv2.SolarResource.albedo
 
 # # LOOP THROUGH COMBOS
 
-# In[9]:
+# In[27]:
 
 
 import pandas as pd
 
 
-# In[10]:
+# In[28]:
 
 
 # 2-Bifi: Prism 457cBSTC
@@ -164,39 +164,40 @@ import pandas as pd
 # 9-Bifi: Sunpreme Inc. SNPM-HxB-400
 
 
-# In[11]:
+# In[29]:
 
 
 # For unknown reasons, pySAM does not calculate this number and you have to obtain it from the GUI.
-# CDELINE:  add 5.38% derate to level-set row 8 (monofacial) to capacity = 1.000 based on SAM00 analysis (Tmod not Tamb).
+# CDELINE:  add 5.85% derate to level-set row 8 (monofacial) to capacity = 1.000 based on SAM00 analysis (Tmod not Tamb).
+# CDELINE 4_26_23:  use post-degradation numbers here.  Prism row 2: -2.17%. LONGi row 4: -0.62%. Canadian Row 8: -1.7%. Sunpreme: -7.5% 
+# set row 8 fudge factor at 1.0405 to null bias error after accounting for -1.7% loss
+system_capacity2 =  72.04280090332031 / (1 - 0.0217) * (1.0398) 
+system_capacity4 = 73.982 / (1 - 0.0062) * (1.0398)                 
+system_capacity8 = 71.078 / (1 - 0.017) * (1.0398)   
+system_capacity9 = 80.089 / (1 - 0.075) * (1.0398) 
 
-system_capacity2 =  72.04280090332031 * (1.0538 + 0.0047) 
-system_capacity4 = 73.982 * (1.0538 + 0.0047)                  
-system_capacity8 = 71.078 * (1.0538 + 0.0047)   
-system_capacity9 = 80.089 * (1.0538 + 0.0047) 
 
-
-# In[12]:
+# In[30]:
 
 
 orga = pd.read_excel('..\Combinations.xlsx', skiprows = 20)
 orga.fillna(method='ffill')
 
 
-# In[13]:
+# In[31]:
 
 
 InputFilesFolder = r'..\InputFiles'
 ResultsFolder = r'..\SAM\Results'
 
 
-# In[14]:
+# In[32]:
 
 
 import pvlib
 
 
-# In[15]:
+# In[33]:
 
 
 wftimestamp = pd.read_csv(os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[0]['WeatherFile_Name']+'.csv'), skiprows=2)
@@ -207,19 +208,19 @@ days = list(wftimestamp.iloc[:,2])
 hours = list(wftimestamp.iloc[:,3])
 
 
-# In[16]:
+# In[34]:
 
 
 pv4.Shading.subarray1_shade_mode
 
 
-# In[17]:
+# In[35]:
 
 
 orga['irrad_mod'].unique()
 
 
-# In[18]:
+# In[36]:
 
 
 dfAll = pd.DataFrame()
@@ -346,7 +347,7 @@ for ii in range(0, len(orga)): # loop here over all the weather files or sims.
     
 
 
-# In[19]:
+# In[37]:
 
 
 dfAll.to_pickle('Results_pysam.pkl')
