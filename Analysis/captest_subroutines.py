@@ -37,7 +37,28 @@ hv.extension('bokeh')
 
 
 
-def setupSAM(sam0, date):
+def setupSAM(sam0, date, rcs=None):
+    """
+    
+    
+
+    Parameters
+    ----------
+    sam0 : PVCaptest object
+        DESCRIPTION.
+    date : datetime
+        DESCRIPTION.
+    rcs : pd.DataFrame, keys 'poa', 't_amb', 'w_vel', optional
+        DESCRIPTION. The default is None.
+
+    Returns
+    -------
+    sam : TYPE
+        DESCRIPTION.
+
+    """
+
+    
     sam = deepcopy(sam0)
 
     # loop through, and save a DF `rc_out` with sam.rc for each timestamp
@@ -48,7 +69,9 @@ def setupSAM(sam0, date):
 
     sam.filter_time(test_date=date, days=7)  # was 14 #.strftime('%Y-%m-%d')
     sam.filter_irr(200, 930)
-    rcs = sam.rep_cond(inplace=False)
+    
+    if rcs is None:
+        rcs = sam.rep_cond(inplace=False)
     # constant rcs. CDELINE: remove this line for variable RC's
     #rcs = pd.DataFrame({'poa':657, 't_amb':16, 'w_vel':2.2}, index=[0])
     sam.rc = rcs  #suppress printing of rc's
@@ -110,17 +133,26 @@ def MBE(ratios):
 def MAE(ratios):
     return np.mean(abs(ratios-1))
 
-def runCaptest(sam, das, run, rownum):
+
+def runCaptest(sam, das, run, rownum, rcs=None):
 
     # Divide year into n=12 increments for sequential cap test
     #rc_out = pd.DataFrame(columns=['poa','t_amb','w_vel'])
+    def _getrcs(rcs,k):
+        if rcs is None:
+            return None
+        else:
+            pd.DataFrame(rcs.loc[k]).T
+        
+    
     sam_list = pd.DataFrame()
     l = das.data.index.__len__()
     n=52
     index = np.linspace(l/n,l*(n-1)/(n), n-1).round()
     datelist = [das.data.index[int(i)] for i in index]
+    
 
-    sam_df = pd.DataFrame([[setupSAM(sam,k)] for k in datelist], index=[k for k in datelist], columns = ['SAM'])
+    sam_df = pd.DataFrame([[setupSAM(sam,k, _getrcs(rcs,k))] for k in datelist], index=[k for k in datelist], columns = ['SAM'])
     
     rc_out = pd.concat([a.rc for a in sam_df.SAM])
     #print(rc_out)
@@ -140,15 +172,38 @@ def runCaptest(sam, das, run, rownum):
     results_DAS = pd.DataFrame(pd.concat([row.DAS.regression_results.predict(row.SAM.rc) for (index,row) in df.iterrows()]),
                               columns=['DAS_test'])
 
-    results_out = pd.concat([results_SAM,results_DAS], axis=1)
+    results_sigmaMC = pd.DataFrame([_monteCarlo(row.SAM.regression_results, row.SAM.rc) for (index,row) in df.iterrows()],
+                              columns=['SAM_model_1sigma_pct'], index=results_SAM.index)
+    results_out = pd.concat([results_SAM,results_DAS,results_sigmaMC], axis=1)
     results_out['ratio'] = results_out.DAS_test / results_out.SAM_test
-    
+    results_out = results_out.join(rc_out)
     results_out.to_csv(os.path.join('results',f'captest_out_{run}_row{rownum}.csv'))
     
     return results_out, df
 
 
 # In[12]:
+    
+def _monteCarlo(results, rc):
+    # bootstrap monte carlo on a statsmodels.regression.linear_model object
+    # take advantage of results.conf_int() at the reference condition
+    def p_regress(val, rc):
+        REGRESSION_PARAMS = [rc.poa,rc.poa**2,rc.poa*rc.t_amb,rc.poa*rc.w_vel]
+        p_out = sum([(v*REGRESSION_PARAMS[i]) for (i,v) in enumerate(val)])
+        #p_out = val[0]*rc.poa + val[1]*(rc.poa**2) + val[2]*(rc.poa*rc.t_amb) + val[3]*(rc.poa*rc.w_vel)
+        return p_out
+    N = 500
+    sigma = abs(results.conf_int(alpha = 0.05).iloc[:,1]-results.conf_int(alpha = 0.05).iloc[:,0])/4
+    loc = results.params
+    val_out = []
+    for i in range(N):
+        val= np.random.normal(loc=loc, scale=sigma)
+        val_out.append(p_regress(val,rc))
+    sigma_out = np.std(val_out)
+    mean = np.mean(val_out)
+    return(sigma_out/mean)
+    
+    
 
 
 def plotAlbedo(results_out, das, rownum, run, title_text='', plotval='ratio'):
