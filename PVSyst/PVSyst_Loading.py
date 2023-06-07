@@ -142,7 +142,8 @@ def definePVsystOutputDecoder():
     'BmIncBk' : 'Beamincident on the rear side',
     'BmSFBak' : 'Beam shading factor on the rear side',
     'BIAMFBk' : 'Beam IAM factor on the rear side',
-    'BeamBak' : 'Beam effective on the rear side'}
+    'BeamBak' : 'Beam effective on the rear side',
+    'CircInc' : 'Beam circumsolar incident radiation'}
 
     return PVsystOutputDecoder
 
@@ -185,11 +186,15 @@ def readPVSystOutputFile(filename):
     # Creating a dictionary for headers, units and their definition
     columnheaders = {}    
     for i in range (1, len(headers)):
-        columnheaders[headers[i]] = {'Definition' : PVsystOutputDecoder[headers[i]],
-                     'Units': units[i]}
+            try:
+                columnheaders[headers[i]] = {'Definition' : PVsystOutputDecoder[headers[i]],
+                             'Units': units[i]}
+            except KeyError: # missing key
+                columnheaders[headers[i]] = {'Definition' : headers[i],
+                             'Units': None}
 
     df = pd.read_csv(f, sep=";", names=headers)   
-    df.index = pd.to_datetime(df['date'], dayfirst=True)
+    df.index = pd.to_datetime(df['date'], dayfirst=False)
 
     return df, columnheaders, metdata
 
@@ -203,13 +208,13 @@ def readPVSystOutputFile(filename):
 
 # In[ ]:
 
-
-print('Inc', PVSystres.iloc[2091]['5_GlobInc']) 
-print('Shd', PVSystres.iloc[14]['5_GlobShd']) # Gfront?
-print('IAM', PVSystres.iloc[14]['5_GlobIAM'])
-print('Slg', PVSystres.iloc[14]['5_GlobSlg']) # Gfront?
-print('Eff', PVSystres.iloc[14]['5_GlobEff']) # Gfront?
-print('Slg Loss', PVSystres.iloc[14]['5_SlgLoss']) # Grear
-print('Rear', PVSystres.iloc[14]['5_GlobBack']) # Grear
-print('Rear', PVSystres.iloc[14]['5_GlobBack']*0.63) # Grear
+if __name__ == "__main__":
+    print('Inc', PVSystres.iloc[2091]['5_GlobInc']) 
+    print('Shd', PVSystres.iloc[14]['5_GlobShd']) # Gfront?
+    print('IAM', PVSystres.iloc[14]['5_GlobIAM'])
+    print('Slg', PVSystres.iloc[14]['5_GlobSlg']) # Gfront?
+    print('Eff', PVSystres.iloc[14]['5_GlobEff']) # Gfront?
+    print('Slg Loss', PVSystres.iloc[14]['5_SlgLoss']) # Grear
+    print('Rear', PVSystres.iloc[14]['5_GlobBack']) # Grear
+    print('Rear', PVSystres.iloc[14]['5_GlobBack']*0.63) # Grear
 
