@@ -1,0 +1,19 @@
+name: gostein
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  # core functionality
+  - python=3.11
+  - ipython
+  - matplotlib
+  - numpy
+  - pandas
+  - python-dateutil
+  - pip
+  - pip:
+      - holoviews
+      - NREL-PySAM
+      - pvlib
+  - conda-forge:
+      - pvcaptest
