@@ -13,7 +13,7 @@ dependencies:
   - pip
   - pip:
       - holoviews
-      - NREL-PySAM
+      - NREL-PySAM=3.0.2
       - pvlib
   - conda-forge:
-      - pvcaptest
+      - pvcaptest=0.10
