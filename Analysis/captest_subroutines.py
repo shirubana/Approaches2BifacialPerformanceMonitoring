@@ -20,6 +20,7 @@ starttime = time.time()
 
 # pip install pvcaptest and holoviews if you don't have it installed already.
 # following example from https://pvcaptest.readthedocs.io/en/latest/examples/complete_capacity_test.html
+# NOTE: code is designed for captest v 0.10.0.   It won't work with latest 0.11.2
 
 #import captest as pvc
 from captest import capdata as pvc
