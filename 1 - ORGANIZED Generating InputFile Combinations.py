@@ -3,6 +3,13 @@
 
 # # 1 - Generating Inputfile Combinations
 
+# In[ ]:
+
+
+# if running on google colab, uncomment the next line and execute this cell to install the dependencies and prevent "ModuleNotFoundError" in later cells:
+# !pip install https://raw.githubusercontent.com/shirubana/Approaches2BifacialPerformanceMonitoring/main/requirements.txt
+
+
 # In[1]:
 
 
