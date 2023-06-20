@@ -1,9 +1,9 @@
-matplotlib==3.2.1
-numpy==1.22.0
-pandas==1.0.3
-python-dateutil==2.8.1
 captest==0.10
 NREL-pysam==3.0.2
+matplotlib
+numpy
+pandas
+python-dateutil
 holoviews
 requests
 future
