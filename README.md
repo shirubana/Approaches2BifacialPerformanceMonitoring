@@ -19,5 +19,13 @@ and activate the environment:
 conda activate gostein
 ```
 
-You are now ready to build the documentation...
+You are now ready to run everything.
 
+
+### Google Colaboratory
+To run these tutorials in [Google Colaboratory](https://colab.research.google.com/)
+you can click the button below:
+
+<a target="_blank" href="https://colab.research.google.com/github/shirubana/Approaches2BifacialPerformanceMonitoring/blob/main/1%20-%20ORGANIZED%20Generating%20InputFile%20Combinations.ipynb">
+<img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>

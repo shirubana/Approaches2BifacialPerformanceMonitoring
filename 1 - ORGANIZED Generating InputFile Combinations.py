@@ -3,6 +3,13 @@
 
 # # 1 - Generating Inputfile Combinations
 
+# In[ ]:
+
+
+# if running on google colab, uncomment the next line and execute this cell to install the dependencies and prevent "ModuleNotFoundError" in later cells:
+# !pip install -r https://raw.githubusercontent.com/shirubana/Approaches2BifacialPerformanceMonitoring/main/requirements.txt
+
+
 # In[1]:
 
 
@@ -36,10 +43,16 @@ plt.rcParams['figure.figsize'] = (12, 4)
 # In[4]:
 
 
-try:
-    data = pd.read_pickle(os.path.join(fielddataFolder,'DATA_Release.pickle'))
-except AttributeError:
-    raise Exception('Error: pandas needs to be >= 1.5.0 to read this pickle file')
+cloude = False
+if cloud:
+    import cloudpickle as cp
+    from urllib.request import urlopen
+    data = cp.load(urlopen("https://drive.google.com/file/d/pickled_file", 'rb'))
+else:
+    try:
+        data = pd.read_pickle(os.path.join(fielddataFolder,'DATA_Release.pickle'))
+    except AttributeError:
+        raise Exception('Error: pandas needs to be >= 1.5.0 to read this pickle file')
         
 print("Clean pickle loaded for Plotting Production Data, # datapoints: ", data.__len__())
 print("Spanning from", data.index[0], " to ", data.index[-1])
