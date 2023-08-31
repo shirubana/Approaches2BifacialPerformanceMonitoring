@@ -64,12 +64,14 @@ def setupSAM(sam0, date, rcs=None):
 
     # loop through, and save a DF `rc_out` with sam.rc for each timestamp
     sam.reset_filter()
+    
+    
+    sam.filter_time(test_date=date, days=7)  # was 14 #.strftime('%Y-%m-%d')
     sam.filter_outliers()
-
     sam.fit_regression(filter=True, summary=False)
 
-    sam.filter_time(test_date=date, days=7)  # was 14 #.strftime('%Y-%m-%d')
-    sam.filter_irr(200, 930)
+    
+    sam.filter_irr(20, 2000)
     
     if rcs is None:
         rcs = sam.rep_cond(inplace=False)
@@ -84,6 +86,7 @@ def setupSAM(sam0, date, rcs=None):
 
     #filter_report_sam = sam.get_summary()
     sam.fit_regression(summary=False)
+    #sam.regression_results =  _checkPvals(sam.regression_results)  # only use model params with pval < 0.05
     #sam.scatter_hv()
     return sam
 
@@ -96,11 +99,13 @@ def setupDAS(das0, date, poa):
     das.filter_time(test_date=date, days=7)  # was 10
 
     das.filter_outliers()
-
-    das.filter_irr(0.5, 1.5, ref_val=poa)  # filter around +/- 50% of POA RC's.  sam.rc['poa'][0]
     das.fit_regression(filter=True, summary=False)
+    
+    das.filter_irr(0.5, 1.5, ref_val=poa)  # filter around +/- 50% of POA RC's.  sam.rc['poa'][0]
+    
     #filter_report_das = das.get_summary()
     das.fit_regression(summary=False)
+    #das.regression_results =  _checkPvals(das.regression_results)  # only use model params with pval < 0.05
     #das.scatter_hv(timeseries=True)
     return das
 
@@ -123,7 +128,13 @@ def saveFilter(df, run, rownum, print_results=False):
 
 
 # In[11]:
-
+def _checkPvals(regression_results):
+    # SET params = 0 if pval > 0.05
+    for i in range(regression_results.params.__len__()):
+        if regression_results.pvalues[i] > 0.05:
+            print(f'{regression_results.params.index[i]} = 0')
+            regression_results.params[i] = 0    
+    return regression_results
 
 def RMSE(ratios): # RMSE around average ratio
     return np.sqrt(np.mean((ratios-np.mean(ratios))**2))
@@ -138,15 +149,17 @@ def MAE(ratios):
 def runCaptest(sam, das, run, rownum, rcs=None):
 
     # Divide year into n=12 increments for sequential cap test
-    #rc_out = pd.DataFrame(columns=['poa','t_amb','w_vel'])
+    if rcs is None:
+        monthlyRCS = get_monthlyRC(sam)
+    
     def _getrcs(rcs,k):
         if rcs is None:
-            return None
+            return pd.DataFrame(monthlyRCS.loc[k.month]).T
         else:
-            pd.DataFrame(rcs.loc[k]).T
+            return pd.DataFrame(rcs.loc[k]).T
         
     
-    sam_list = pd.DataFrame()
+    #sam_list = pd.DataFrame()
     l = das.data.index.__len__()
     n=52
     index = np.linspace(l/n,l*(n-1)/(n), n-1).round()
@@ -184,7 +197,34 @@ def runCaptest(sam, das, run, rownum, rcs=None):
 
 
 # In[12]:
+def get_monthlyRC(SAM):
     
+    def _filterRC(SAM,start, end):
+        #start : str or pd.Timestamp or None, default None
+        #end : str or pd.Timestamp or None, default None
+        sam = deepcopy(SAM)
+        sam.reset_filter()
+        sam.filter_time(start=start, end=end)  
+        sam.filter_outliers()
+        sam.fit_regression(filter=True, summary=False)
+        sam.filter_irr(20, 2000)
+        rcs = sam.rep_cond(inplace=False)
+        return rcs
+    
+    #rcs_out = pd.DataFrame(range(1,13))
+    for n in range(1,13): 
+        temp_dates = SAM.data.index[SAM.data.index.month==n]
+        temp  = _filterRC(SAM,temp_dates.min(),temp_dates.max()) 
+        temp.index=[n]
+        if n==1:
+            rcs_out = temp
+        else:
+            rcs_out = rcs_out.append(temp)
+    
+    return rcs_out
+
+        
+
 def _monteCarlo(results, rc):
     # bootstrap monte carlo on a statsmodels.regression.linear_model object
     # take advantage of results.conf_int() at the reference condition
