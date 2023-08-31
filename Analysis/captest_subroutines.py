@@ -66,7 +66,7 @@ def setupSAM(sam0, date, rcs=None):
     sam.reset_filter()
     
     
-    sam.filter_time(test_date=date, days=7)  # was 14 #.strftime('%Y-%m-%d')
+    sam.filter_time(test_date=date, days=8)  # was 14 #.strftime('%Y-%m-%d')
     sam.filter_outliers()
     sam.fit_regression(filter=True, summary=False)
 
@@ -86,7 +86,11 @@ def setupSAM(sam0, date, rcs=None):
 
     #filter_report_sam = sam.get_summary()
     sam.fit_regression(summary=False)
-    #sam.regression_results =  _checkPvals(sam.regression_results)  # only use model params with pval < 0.05
+    #regress_formula_new =  _checkPvals(sam.regression_results, sam.regression_formula)  # only use model params with pval < 0.05
+    #if regress_formula_new != sam.regression_formula:
+    #    print(f'Date: {date}. Regression: {regress_formula_new}')
+    #    sam.regression_formula = regress_formula_new
+    #    sam.fit_regression(summary=False)
     #sam.scatter_hv()
     return sam
 
@@ -96,7 +100,7 @@ def setupDAS(das0, date, poa):
     das.reset_filter()
     
     # the integrated time filtering module just isn't working. have to DIY
-    das.filter_time(test_date=date, days=7)  # was 10
+    das.filter_time(test_date=date, days=8)  # was 7
 
     das.filter_outliers()
     das.fit_regression(filter=True, summary=False)
@@ -105,7 +109,11 @@ def setupDAS(das0, date, poa):
     
     #filter_report_das = das.get_summary()
     das.fit_regression(summary=False)
-    #das.regression_results =  _checkPvals(das.regression_results)  # only use model params with pval < 0.05
+    #regress_formula_new =  _checkPvals(das.regression_results, das.regression_formula)  # only use model params with pval < 0.05
+    #if regress_formula_new != das.regression_formula:
+    #    print(f'Date: {date}. Regression: {regress_formula_new}')
+    #    das.regression_formula = regress_formula_new
+    #    das.fit_regression(summary=False)
     #das.scatter_hv(timeseries=True)
     return das
 
@@ -128,13 +136,13 @@ def saveFilter(df, run, rownum, print_results=False):
 
 
 # In[11]:
-def _checkPvals(regression_results):
-    # SET params = 0 if pval > 0.05
+def _checkPvals(regression_results, regression_formula):
+    # remove regression_formula params if pval > 0.05
     for i in range(regression_results.params.__len__()):
         if regression_results.pvalues[i] > 0.05:
-            print(f'{regression_results.params.index[i]} = 0')
-            regression_results.params[i] = 0    
-    return regression_results
+            #print(f'{regression_results.params.index[i]} = 0')
+            regression_formula = regression_formula.replace(f'+ {regression_results.params.index[i]}', '')   
+    return regression_formula
 
 def RMSE(ratios): # RMSE around average ratio
     return np.sqrt(np.mean((ratios-np.mean(ratios))**2))
