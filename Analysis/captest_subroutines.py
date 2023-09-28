@@ -276,6 +276,8 @@ def plotAlbedo(results_out, das, rownum, run, title_text='', plotval='ratio'):
     ax2.set_ylabel('Albedo', color='r')
     fig.autofmt_xdate()
     plt.title(f'Row{rownum} {title_text}. MBE: {MBE(results_out[plotval])*100:0.2f}%. RMSE: {RMSE(results_out[plotval])*100:0.2f}%. ' )
+    if not os.path.exists(os.path.join('images',run)):
+        os.makedirs(os.path.join('images',run))
     plt.savefig(os.path.join('images',run,f'Row{rownum}{title_text}_Captest.png'))
     
 def savePowervPOA(df, results_out, rownum, run, text=''):
@@ -289,6 +291,8 @@ def savePowervPOA(df, results_out, rownum, run, text=''):
 
         plot = plot1 * plot2 * plot1_test * plot2_test
         plot.label=row.date.strftime('%Y-%m-%d')
+        if not os.path.exists(os.path.join('images',run,f'Row{rownum}')):
+            os.makedirs(os.path.join('images',run,f'Row{rownum}'))
         hv.save(plot, os.path.join('images',run,f'Row{rownum}',f'Row{rownum}{text}_PvsPOA_{plot.label}.png'), fmt='png')
         #plot
 

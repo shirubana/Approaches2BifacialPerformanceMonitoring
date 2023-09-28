@@ -226,7 +226,7 @@ orga['irrad_mod'].unique()
 
 dfAll = pd.DataFrame()
 
-for ii in range(0, len(orga)): # loop here over all the weather files or sims.
+for ii in range(0, len(orga)):  # loop here over all the weather files or sims.
 
     print(ii)
     weatherfile = os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[ii]['WeatherFile_Name']+'.csv')

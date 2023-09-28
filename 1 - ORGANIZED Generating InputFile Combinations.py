@@ -3,14 +3,14 @@
 
 # # 1 - Generating Inputfile Combinations
 
-# In[ ]:
+# In[1]:
 
 
 # if running on google colab, uncomment the next line and execute this cell to install the dependencies and prevent "ModuleNotFoundError" in later cells:
 # !pip install -r https://raw.githubusercontent.com/shirubana/Approaches2BifacialPerformanceMonitoring/main/requirements.txt
 
 
-# In[1]:
+# In[2]:
 
 
 fielddataFolder = 'FieldData'
@@ -18,7 +18,7 @@ InputFilesFolder = 'InputFiles'
 debugflag = False
 
 
-# In[2]:
+# In[3]:
 
 
 import pandas as pd
@@ -29,7 +29,7 @@ import numpy as np
 import os
 
 
-# In[3]:
+# In[4]:
 
 
 plt.rcParams.update({'font.size': 22})
@@ -40,10 +40,10 @@ plt.rcParams['figure.figsize'] = (12, 4)
 
 # This pickle is all the rows together, with data starting on 03/08 and ending on 07/29
 
-# In[4]:
+# In[5]:
 
 
-cloude = False
+cloud = False
 if cloud:
     import cloudpickle as cp
     from urllib.request import urlopen
@@ -58,7 +58,7 @@ print("Clean pickle loaded for Plotting Production Data, # datapoints: ", data._
 print("Spanning from", data.index[0], " to ", data.index[-1])
 
 
-# In[5]:
+# In[6]:
 
 
 data.keys()
@@ -67,13 +67,13 @@ data.keys()
 # Add averages that are missing above
 # 
 
-# In[6]:
+# In[7]:
 
 
 import matplotlib.pyplot as plt
 
 
-# In[7]:
+# In[8]:
 
 
 # FRONT POA
@@ -115,14 +115,22 @@ data['rowFieldWindSpeedAverage'] = data[['row7wind_speed','row2wind_speed']].mea
 
 data['sunkity_CM11_GRI_over_SRRL_GHI'] = data['sunkitty_GRI_CM22'] / data['SRRL_GHI']
 
+# SRRL Albedo - monthly average
 
-# In[8]:
+
+# In[ ]:
+
+
+
+
+
+# In[9]:
 
 
 # MAKE Weather Files
 
 
-# In[9]:
+# In[10]:
 
 
 def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=None, DNI=None, GHI=None, 
@@ -180,7 +188,7 @@ def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=N
         if type(Albedo) == pd.Series:
             #Albedo.loc[(~np.isfinite(Albedo)) & Albedo.notnull()] = np.nan
             
-            Albedo = Albedo.fillna(0.99).clip(lower=0.01,upper=0.99)
+            Albedo = Albedo.fillna(0.99).clip(lower=0.01,upper=0.99).round(3)
         savedata['Albedo'] = list(Albedo)
         
     # reorder csv
@@ -245,7 +253,7 @@ def save_TMY3(datecol, timecol, windspeed, temp_amb, Albedo, POA=None, DHI=None,
         savedata.to_csv(ict, index=False)
 
 
-# In[10]:
+# In[11]:
 
 
 filterdates = (data.index >= '2021-06-01')  & (data.index < '2022-06-01') 
@@ -254,13 +262,32 @@ data3 = data[filterdates].resample('60T', label='right', closed='right').mean().
 data_das = data[filterdates].resample('15T', label='right', closed='right').mean().copy()
 
 
-# In[11]:
+# In[12]:
 
 
 data = data[filterdates].resample('60T', label='left', closed='left').mean().copy()
 
 
-# In[12]:
+# In[13]:
+
+
+# Monthly SRRL albedo - irradiance weighted
+#get_ipython().run_line_magic('matplotlib', 'notebook') #interactive matplotlib
+get_ipython().run_line_magic('matplotlib', 'inline') # inline plotting for .py file use
+
+data['SRRL_albedo_weighted'] = (data.SRRL_albedo * data.SRRL_GHI)
+data_month = data[['SRRL_albedo_weighted','SRRL_GHI']].resample('M', label='left', closed='left').mean()
+data_month['SRRL_albedo_monthly'] = data_month['SRRL_albedo_weighted'] / data_month['SRRL_GHI']
+data['SRRL_albedo_monthly'] = data_month['SRRL_albedo_monthly'].reindex(data.index, method='ffill')
+
+plt.figure()
+plt.plot(data.SRRL_albedo,'r')
+plt.plot(data_month.SRRL_albedo_monthly,'k')
+plt.plot(data['SRRL_albedo_monthly'],'b:')
+plt.ylabel('Albedo')
+
+
+# In[14]:
 
 
 data2.keys()
@@ -273,9 +300,12 @@ data2.keys()
 data_das['Hydra_avg'] = data_das[['Hydra_current_1','Hydra_current_2','Hydra_current_3','Hydra_current_4','Hydra_current_5',
                                       'Hydra_current_6','Hydra_current_7','Hydra_current_8','Hydra_current_9','Hydra_current_10',
                                       'Hydra_current_11','Hydra_current_12']].mean(axis=1)
+data_das['Hydra_min'] = data_das[['Hydra_current_1','Hydra_current_2','Hydra_current_3','Hydra_current_4','Hydra_current_5',
+                                      'Hydra_current_6','Hydra_current_7','Hydra_current_8','Hydra_current_9','Hydra_current_10',
+                                      'Hydra_current_11','Hydra_current_12']].min(axis=1)
 data_das_out = data_das[['Gfront','Grear', 'row2wind_speed','temp_ambient_FieldAverage',
                         'sunkitty_GRI_CM22', 'SRRL_GHI', 'row7RotatingAlbedometer_CM11_Down',
-                        'row7RotatingAlbedometer_CM11_Up','Hydra_avg',
+                        'row7RotatingAlbedometer_CM11_Up','Hydra_avg','Hydra_min',
                         'Yf2','row2tmod_1', 'row2tmod_2', 
                          'Yf4','row4tmod_1', 'row4tmod_2', 
                          'Yf8','row8tmod_1', 'row8tmod_2', 
@@ -287,25 +317,25 @@ print(data_das_out.columns)
 data_das_out.to_csv(os.path.join('Analysis','data','Rows2-9_2021-2022_15T.csv'))
 
 
-# In[13]:
+# In[16]:
 
 
 orga = pd.read_excel('Combinations.xlsx', skiprows = 20)
 orga.fillna(method='ffill')
 
 
-# In[14]:
+# In[17]:
 
 
 #for ii in range(0,len(orga)):
-ii=1
+ii=0
 orga.loc[ii] 
 
 
-# In[15]:
+# In[18]:
 
 
-for ii in range(0, len(orga)):
+for ii in range(0, 1): #len(orga)
 
     savefilevar = os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[ii]['WeatherFile_Name']+'.csv')
     
@@ -356,6 +386,8 @@ for ii in range(0, len(orga)):
         albvarname = 'sunkitty_albedo_AP'
     elif albvar == 4:
         albvarname = 'SRRL_albedo'
+    elif albvar ==5:
+        albvarname = 'SRRL_albedo_monthly'
     else:
         print("Case Error in albvar.")
  
