@@ -82,7 +82,7 @@ def setupSAM(sam0, date, rcs=None):
     
 
     # filter irradiance around RC's
-    sam.filter_irr(0.5, 1.5, ref_val=sam.rc['poa'][0])
+    sam.filter_irr(0.5, 1.5, ref_val=sam.rc['poa'].iloc[0])
 
     #filter_report_sam = sam.get_summary()
     sam.fit_regression(summary=False)
@@ -227,7 +227,7 @@ def get_monthlyRC(SAM):
         if n==1:
             rcs_out = temp
         else:
-            rcs_out = rcs_out.append(temp)
+            rcs_out = pd.concat([rcs_out, temp])
     
     return rcs_out
 
@@ -263,7 +263,7 @@ def plotAlbedo(results_out, das, rownum, run, title_text='', plotval='ratio'):
     #albedo_sam = sam.data.Albedo[sam.data.poa2 > 20] #.tz_localize('Etc/GMT+7')
     index = results_out.index
     grouper = index[index.searchsorted(albedo.index)-1]
-    alb2 = albedo.groupby(grouper).mean()
+    alb2 = albedo.groupby(grouper).mean(numeric_only=True)
     #grouper_sam = index[index.searchsorted(albedo_sam.index)-1]
     #alb2_sam = albedo_sam.groupby(grouper_sam).mean()
 
@@ -327,8 +327,8 @@ def runIEC(df, rownum, run, text='', gtotal=False):
     IEClist = []
     result = zip(df.DAS, df.SAM)
     for (das0, sam0) in result:
-        sam1 = sam0.data_filtered.resample('1h').mean()
-        das1 = das0.data_filtered.resample('1h').mean()
+        sam1 = sam0.data_filtered.resample('1h').mean(numeric_only=True)
+        das1 = das0.data_filtered.resample('1h').mean(numeric_only=True)
         
         rcs = [sam1[f'poa{rownum}'].mean(), sam1[f'tmod{rownum}'].mean()]
         if gtotal:
