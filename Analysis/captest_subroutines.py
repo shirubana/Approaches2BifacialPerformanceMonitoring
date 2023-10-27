@@ -81,9 +81,17 @@ def setupSAM(sam0, date, rcs=None):
     sam.rc.index=[date]#.strftime('%Y-%m-%d')
     
 
-    # filter irradiance around RC's
+    # filter irradiance around RC's. This can throw away too many points if RC's are small and data is sparse
+    sam_old = deepcopy(sam)
     sam.filter_irr(0.5, 1.5, ref_val=sam.rc['poa'].iloc[0])
-
+    data_points_old = sam.data_filtered.__len__() 
+    if data_points_old <= 5:  # expand RC irradiance filter
+        sam = sam_old
+        sam.filter_irr(0.2, 2, ref_val=sam.rc['poa'].iloc[0])
+        print(f'Irradiance filter window expanded b/c its too narrow. Old # points: {data_points_old}.  ' +
+              f'New # points: {sam.data_filtered.__len__()}')
+    
+    
     #filter_report_sam = sam.get_summary()
     sam.fit_regression(summary=False)
     #regress_formula_new =  _checkPvals(sam.regression_results, sam.regression_formula)  # only use model params with pval < 0.05

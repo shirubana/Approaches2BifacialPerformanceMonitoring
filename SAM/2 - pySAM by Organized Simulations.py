@@ -6,7 +6,7 @@
 # Runs all combinations in orga, for the 4 rows
 # Calcualtes RMSE & MBD, relative and absolutes
 
-# In[19]:
+# In[1]:
 
 
 # Written for nrel-pysam 3.0.2
@@ -26,7 +26,7 @@ sif9 = 'Row9Json'
 jsonnames = ['Row2PrismBifi', 'Row4LongiBifi', 'Row8MONOFACIALReference', 'Row9Sunpreme']
 
 
-# In[20]:
+# In[2]:
 
 
 import PySAM
@@ -41,7 +41,7 @@ print(PySAM.__version__)
 
 
 
-# In[21]:
+# In[3]:
 
 
 file_names = ["pvsamv1", "grid", "utilityrate5", "cashloan"]
@@ -70,7 +70,7 @@ ur9 = UtilityRate.from_existing(pv9)
 so9 = Cashloan.from_existing(grid9, 'FlatPlatePVCommercial')
 
 
-# In[22]:
+# In[4]:
 
 
 for count, module in enumerate([pv2, grid2, ur2, so2]):
@@ -87,7 +87,7 @@ for count, module in enumerate([pv2, grid2, ur2, so2]):
                 print(module, k, v)
 
 
-# In[23]:
+# In[5]:
 
 
 for count, module in enumerate([pv4, grid4, ur4, so4]):
@@ -104,7 +104,7 @@ for count, module in enumerate([pv4, grid4, ur4, so4]):
                 print(module, k, v)
 
 
-# In[24]:
+# In[6]:
 
 
 for count, module in enumerate([pv8, grid8, ur8, so8]):
@@ -121,7 +121,7 @@ for count, module in enumerate([pv8, grid8, ur8, so8]):
                 print(module, k, v)
 
 
-# In[25]:
+# In[7]:
 
 
 for count, module in enumerate([pv9, grid9, ur9, so9]):
@@ -140,7 +140,7 @@ for count, module in enumerate([pv9, grid9, ur9, so9]):
 
 # ##### Sanity checks
 
-# In[26]:
+# In[8]:
 
 
 pv2.SolarResource.solar_resource_file
@@ -151,13 +151,13 @@ pv2.SolarResource.albedo
 
 # # LOOP THROUGH COMBOS
 
-# In[27]:
+# In[9]:
 
 
 import pandas as pd
 
 
-# In[28]:
+# In[10]:
 
 
 # 2-Bifi: Prism 457cBSTC
@@ -165,7 +165,7 @@ import pandas as pd
 # 9-Bifi: Sunpreme Inc. SNPM-HxB-400
 
 
-# In[29]:
+# In[11]:
 
 
 # For unknown reasons, pySAM does not calculate this number and you have to obtain it from the GUI.
@@ -179,27 +179,27 @@ system_capacity8 = 71.078 / (1 - 0.017) * (1.0398+.0015)
 system_capacity9 = 80.089 / (1 - 0.075) * (1.0398+.0015) 
 
 
-# In[30]:
+# In[12]:
 
 
 orga = pd.read_excel('..\Combinations.xlsx', skiprows = 20)
 orga.fillna(method='ffill')
 
 
-# In[31]:
+# In[13]:
 
 
 InputFilesFolder = r'..\InputFiles'
 ResultsFolder = r'..\SAM\Results'
 
 
-# In[32]:
+# In[14]:
 
 
 import pvlib
 
 
-# In[33]:
+# In[15]:
 
 
 wftimestamp = pd.read_csv(os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[0]['WeatherFile_Name']+'.csv'), skiprows=2)
@@ -210,24 +210,24 @@ days = list(wftimestamp.iloc[:,2])
 hours = list(wftimestamp.iloc[:,3])
 
 
-# In[34]:
+# In[16]:
 
 
 pv4.Shading.subarray1_shade_mode
 
 
-# In[35]:
+# In[17]:
 
 
 orga['irrad_mod'].unique()
 
 
-# In[36]:
+# In[18]:
 
 
 dfAll = pd.DataFrame()
 
-for ii in range(19,20): #len(orga) # loop here over all the weather files or sims.
+for ii in range(0,len(orga)): # # loop here over all the weather files or sims.
 
     print(ii)
     weatherfile = os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[ii]['WeatherFile_Name']+'.csv')
