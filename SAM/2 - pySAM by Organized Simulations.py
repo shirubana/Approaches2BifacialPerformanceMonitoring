@@ -186,31 +186,20 @@ orga = pd.read_excel('..\Combinations.xlsx', skiprows = 20)
 orga.fillna(method='ffill')
 
 
-# In[13]:
+# In[17]:
 
 
 InputFilesFolder = r'..\InputFiles'
 ResultsFolder = r'..\SAM\Results'
 
 
-# In[14]:
+# In[18]:
 
 
 import pvlib
 
 
-# In[15]:
-
-
-wftimestamp = pd.read_csv(os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[0]['WeatherFile_Name']+'.csv'), skiprows=2)
-datelist = list(pd.to_datetime(wftimestamp.iloc[:,0:4]))
-months = list(wftimestamp.iloc[:,1])
-years = list(wftimestamp.iloc[:,0])
-days = list(wftimestamp.iloc[:,2])
-hours = list(wftimestamp.iloc[:,3])
-
-
-# In[16]:
+# In[20]:
 
 
 pv4.Shading.subarray1_shade_mode
@@ -228,12 +217,22 @@ orga['irrad_mod'].unique()
 dfAll = pd.DataFrame()
 
 for ii in range(0,len(orga)): # # loop here over all the weather files or sims.
-
+#for ii in range (53,len(orga)):
     print(ii)
+
     weatherfile = os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[ii]['WeatherFile_Name']+'.csv')
     savefilevar = os.path.join(ResultsFolder,'Results_pySAM_'+orga.loc[ii]['Sim']+'.csv')
 
-#    POABOA = orga.loc[ii]['POABOA']
+    
+    wftimestamp = pd.read_csv(weatherfile, skiprows=2)
+    datelist = list(pd.to_datetime(wftimestamp.iloc[:,0:4]))
+    months = list(wftimestamp.iloc[:,1])
+    years = list(wftimestamp.iloc[:,0])
+    days = list(wftimestamp.iloc[:,2])
+    hours = list(wftimestamp.iloc[:,3])
+    minutes = list(wftimestamp.iloc[:,4])
+    
+    #    POABOA = orga.loc[ii]['POABOA']
     irrad_mod = orga.loc[ii]['irrad_mod']
     sky_model = orga.loc[ii]['sky_model']
 
@@ -265,25 +264,25 @@ for ii in range(0,len(orga)): # # loop here over all the weather files or sims.
         pv8.Shading.subarray1_shade_mode = 1.0
         pv9.Shading.subarray1_shade_mode = 1.0
     """
-    grid2.SystemOutput.gen = [0] * 8760  # p_out   # let's set all the values to 0
+    grid2.SystemOutput.gen = [0] * len(datelist)  # p_out   # let's set all the values to 0
     pv2.execute()
     grid2.execute()
     ur2.execute()
     so2.execute()
 
-    grid4.SystemOutput.gen = [0] * 8760  # p_out   # let's set all the values to 0
+    grid4.SystemOutput.gen = [0] * len(datelist)  # p_out   # let's set all the values to 0
     pv4.execute()
     grid4.execute()
     ur4.execute()
     so4.execute()
 
-    grid8.SystemOutput.gen = [0] * 8760  # p_out   # let's set all the values to 0
+    grid8.SystemOutput.gen = [0] * len(datelist)  # p_out   # let's set all the values to 0
     pv8.execute()
     grid8.execute()
     ur8.execute()
     so8.execute()
 
-    grid9.SystemOutput.gen = [0] * 8760  # p_out   # let's set all the values to 0
+    grid9.SystemOutput.gen = [0] * len(datelist)  # p_out   # let's set all the values to 0
     pv9.execute()
     grid9.execute()
     ur9.execute()
@@ -321,7 +320,7 @@ for ii in range(0,len(orga)): # # loop here over all the weather files or sims.
     alb = list(results['alb'])
     
     
-    simtyp = [orga.loc[ii]['Sim']] * 8760
+    simtyp = [orga.loc[ii]['Sim']] * len(datelist)
 
     res = pd.DataFrame(list(zip(simtyp, power2, celltemp2, rear2, front2,
                                power4, celltemp4, rear4, front4,
@@ -332,7 +331,7 @@ for ii in range(0,len(orga)): # # loop here over all the weather files or sims.
                      'Power8' , 'CellTemp8', 'Front8',
                      'Power9' , 'CellTemp9', 'Rear9', 'Front9', 'DNI', 'DHI', 'Alb'])
 
-    res = res[0:8760]
+    res = res[0:len(datelist)]
     res['index'] = res.index
     res['Power2']= res['Power2']/system_capacity2 # normalizing by the system_capacity
     res['Power4']= res['Power4']/system_capacity4 # normalizing by the system_capacity
@@ -342,7 +341,7 @@ for ii in range(0,len(orga)): # # loop here over all the weather files or sims.
     res['Year'] = years
     res['Month'] = months
     res['Hour'] = hours
-
+    res['Minutes'] = minutes
     #    res.index = timestamps
     res.to_pickle('Sim_'+orga.loc[ii]['Sim']+'.pkl')
     res.to_csv(savefilevar, float_format='%g')
