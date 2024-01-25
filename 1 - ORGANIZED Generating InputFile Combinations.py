@@ -3,14 +3,14 @@
 
 # # 1 - Generating Inputfile Combinations
 
-# In[1]:
+# In[64]:
 
 
 # if running on google colab, uncomment the next line and execute this cell to install the dependencies and prevent "ModuleNotFoundError" in later cells:
 # !pip install -r https://raw.githubusercontent.com/shirubana/Approaches2BifacialPerformanceMonitoring/main/requirements.txt
 
 
-# In[2]:
+# In[45]:
 
 
 fielddataFolder = 'FieldData'
@@ -18,7 +18,7 @@ InputFilesFolder = 'InputFiles'
 debugflag = False
 
 
-# In[3]:
+# In[46]:
 
 
 import pandas as pd
@@ -29,7 +29,7 @@ import numpy as np
 import os
 
 
-# In[4]:
+# In[47]:
 
 
 plt.rcParams.update({'font.size': 22})
@@ -40,7 +40,7 @@ plt.rcParams['figure.figsize'] = (12, 4)
 
 # This pickle is all the rows together, with data starting on 03/08 and ending on 07/29
 
-# In[5]:
+# In[48]:
 
 
 cloud = False
@@ -58,7 +58,7 @@ print("Clean pickle loaded for Plotting Production Data, # datapoints: ", data._
 print("Spanning from", data.index[0], " to ", data.index[-1])
 
 
-# In[6]:
+# In[49]:
 
 
 data.keys()
@@ -67,13 +67,13 @@ data.keys()
 # Add averages that are missing above
 # 
 
-# In[7]:
+# In[50]:
 
 
 import matplotlib.pyplot as plt
 
 
-# In[8]:
+# In[51]:
 
 
 # FRONT POA
@@ -124,13 +124,13 @@ data['sunkity_CM11_GRI_over_SRRL_GHI'] = data['sunkitty_GRI_CM22'] / data['SRRL_
 
 
 
-# In[9]:
+# In[52]:
 
 
 # MAKE Weather Files
 
 
-# In[10]:
+# In[53]:
 
 
 def saveSAM_WeatherFile(timestamps, windspeed, temp_amb, Albedo, POA=None, DHI=None, DNI=None, GHI=None, 
@@ -253,22 +253,23 @@ def save_TMY3(datecol, timecol, windspeed, temp_amb, Albedo, POA=None, DHI=None,
         savedata.to_csv(ict, index=False)
 
 
-# In[11]:
+# In[55]:
 
 
 filterdates = (data.index >= '2021-06-01')  & (data.index < '2022-06-01') 
 data2 = data[filterdates].copy()
 data3 = data[filterdates].resample('60T', label='right', closed='right').mean().copy()
-data_das = data[filterdates].resample('15T', label='right', closed='right').mean().copy()
+data_das = data[filterdates].resample('15T', label='right', closed='left').mean().copy()
+data_5min = data[filterdates].resample('5T', label='right', closed='left').mean().copy()
 
 
-# In[12]:
+# In[31]:
 
 
 data = data[filterdates].resample('60T', label='left', closed='left').mean().copy()
 
 
-# In[13]:
+# In[32]:
 
 
 # Monthly SRRL albedo - irradiance weighted
@@ -287,13 +288,13 @@ plt.plot(data['SRRL_albedo_monthly'],'b:')
 plt.ylabel('Albedo')
 
 
-# In[14]:
+# In[33]:
 
 
 data2.keys()
 
 
-# In[19]:
+# In[15]:
 
 
 # save data_das field das data as four .csv files for consumption by pvcaptest
@@ -317,6 +318,27 @@ print(data_das_out.columns)
 data_das_out.to_csv(os.path.join('Analysis','data','Rows2-9_2021-2022_15T.csv'))
 
 
+# In[59]:
+
+
+# 1-minute data for IEC61724-2 method
+data_5min['Hydra_avg'] = data_5min[['Hydra_current_1','Hydra_current_2','Hydra_current_3','Hydra_current_4','Hydra_current_5',
+                                      'Hydra_current_6','Hydra_current_7','Hydra_current_8','Hydra_current_9','Hydra_current_10',
+                                      'Hydra_current_11','Hydra_current_12']].mean(axis=1)
+
+data_5min_out = data_5min[['Gfront','Grear', 'row2wind_speed','temp_ambient_FieldAverage',
+                        'sunkitty_GRI_CM22', 'SRRL_GHI','SRRL_DHI','Hydra_avg',
+                        'Yf2','row2tmod_1', 'row2tmod_2', 
+                         'Yf4','row4tmod_1', 'row4tmod_2', 
+                         'Yf8','row8tmod_1', 'row8tmod_2', 
+                         ]]
+data_5min_out = data_5min_out.rename(columns={'Gfront':'Gfront_poa','Yf2':'power_dc_inv2',
+                                            'Yf4':'power_dc_inv4','Yf8':'power_dc_inv8', 
+                          'sunkitty_GRI_CM22':'albedo_down', 'SRRL_GHI':'albedo_up'})
+
+data_5min_out.to_csv(os.path.join('Analysis','data','Rows2-8_2021-2022_5T.csv'))
+
+
 # In[16]:
 
 
@@ -324,18 +346,18 @@ orga = pd.read_excel('Combinations.xlsx', skiprows = 20)
 orga.fillna(method='ffill')
 
 
-# In[17]:
+# In[22]:
 
 
 #for ii in range(0,len(orga)):
-ii=0
-orga.loc[ii] 
+ii=14
+orga.iloc[ii] 
 
 
 # In[18]:
 
 
-for ii in range(0, 1): #len(orga)
+for ii in range(14, 15): #len(orga)
 
     savefilevar = os.path.join(InputFilesFolder,'WF_SAM_'+orga.loc[ii]['WeatherFile_Name']+'.csv')
     
@@ -509,4 +531,68 @@ for ii in range(0, 1): #len(orga)
                             DHI = data.SRRL_DHI, DNI = data.SRRL_DNI, GHI = data.SRRL_GHI,
                             savefile = savefilevar, 
                             includeminute = False)
+
+
+# In[36]:
+
+
+data_5min_out.columns
+
+
+# In[60]:
+
+
+# save 5-minute IEC files - Option1B (GHI,DHI,Albedo), Option2A (POA+BOA), Option2B (RefMod POA)
+saveSAM_WeatherFile(timestamps = data_5min_out.index, 
+                    windspeed = data_5min_out['row2wind_speed'], 
+                    temp_amb = data_5min_out['temp_ambient_FieldAverage'], 
+                    Albedo = data_5min_out['albedo_down'] / data_5min_out['albedo_up'] , 
+                    DHI = data_5min_out.SRRL_DHI,  GHI = data_5min_out.albedo_up,
+                    savefile = os.path.join(InputFilesFolder,'WF_SAM_IEC1B.csv'), 
+                    includeminute = True)
+
+
+# In[61]:
+
+
+# save 5-minute IEC files - Option2 (Gpoa for Row8)
+saveSAM_WeatherFile(timestamps = data_5min_out.index, 
+                    windspeed = data_5min_out['row2wind_speed'], 
+                    temp_amb = data_5min_out['temp_ambient_FieldAverage'], 
+                    Albedo = data_5min_out['albedo_down'] / data_5min_out['albedo_up'] , 
+                    POA = data_5min_out.Gfront_poa,
+                    savefile = os.path.join(InputFilesFolder,'WF_SAM_IEC2Mono.csv'), 
+                    includeminute = True)
+
+
+# In[62]:
+
+
+# save 5-minute IEC files - Option2A (Gpoa+Bifi*Gboa POA)
+saveSAM_WeatherFile(timestamps = data_5min_out.index, 
+                    windspeed = data_5min_out['row2wind_speed'], 
+                    temp_amb = data_5min_out['temp_ambient_FieldAverage'], 
+                    Albedo = data_5min_out['albedo_down'] / data_5min_out['albedo_up'] , 
+                    POA = data_5min_out.Gfront_poa + 0.72*data_5min_out.Grear,
+                    savefile = os.path.join(InputFilesFolder,'WF_SAM_IEC2A.csv'), 
+                    includeminute = True)
+
+
+# In[63]:
+
+
+# save 5-minute IEC files - Option2B (RefMod POA)
+saveSAM_WeatherFile(timestamps = data_5min_out.index, 
+                    windspeed = data_5min_out['row2wind_speed'], 
+                    temp_amb = data_5min_out['temp_ambient_FieldAverage'], 
+                    Albedo = data_5min_out['albedo_down'] / data_5min_out['albedo_up'] , 
+                    POA = data_5min_out['Hydra_avg']*1000 / 9.56,
+                    savefile = os.path.join(InputFilesFolder,'WF_SAM_IEC2B.csv'), 
+                    includeminute = True)
+
+
+# In[ ]:
+
+
+
 
